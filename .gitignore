@@ -22,3 +22,14 @@ mono_crash.*.json
 
 # Export related folder
 Exports/
+
+# LaTeX temporary files
+*.aux
+*.fdb_latexmk
+*.fls
+*.synctex.gz
+*.toc
+*.log
+*.out
+*.lof
+*.lot
