@@ -1,0 +1,453 @@
+% LaTeX reproduction of "PAINTING FEVER - Game Design Document (GDD)"
+% Generated from the uploaded PDF by the user.
+\documentclass[11pt,a4paper]{report}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{geometry}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\usepackage{titling}
+\usepackage{parskip}
+\usepackage{graphicx}
+\geometry{margin=25mm}
+\setlength{\parindent}{0pt}
+
+% Title data
+\title{PAINTING FEVER\\\large Game Design Document (GDD)}
+\author{Author: Gökhan İRTEM \\ Co-author: Barkın ZORLU}
+\date{Version: 5.6}
+
+\begin{document}
+\pagenumbering{gobble}
+\maketitle
+\vspace{2em}
+\begin{center}
+\href{https://gokhan-irtem.itch.io/}{https://gokhan-irtem.itch.io/}
+\end{center}
+
+\tableofcontents
+\clearpage
+\pagenumbering{arabic}
+
+\chapter{Introduction and Overview}
+\section{Game Concept}
+Game Version: Alpha 0.1.0
+
+\subsection{Logline}
+A fast paced platformer and lane switching game where the player switches lanes/platforms with key presses while timing their moves according to incoming threats while painting the dangerous levels as they traverse.
+
+\subsection{Genre}
+Rhythm Platformer, Action.
+
+\subsection{Target Audience}
+Casual and hardcore mobile/PC gamers, rhythm game enthusiasts, players who enjoy high difficulty/skill-based challenges.
+
+\subsection{Unique Selling Points (USPs)}
+\begin{itemize}
+  \item Music synchronization and level effects.
+  \item Coloring levels.
+  \item High replayability.
+\end{itemize}
+
+\section{Design Goals}
+\begin{itemize}
+  \item Flow and satisfaction
+  \item Simple to learn, hard to master.
+  \item Offer challenge
+  \item Smooth gameplay.
+\end{itemize}
+
+\section{Aim of the Game}
+Traverse obstacles via rhythm based movement while painting blocks, painting blocks earn percentage points to unlock the next stage.
+
+\chapter{Gameplay and Mechanics}
+\section{Core Mechanics}
+\subsection{Painting blocks}
+\begin{itemize}
+  \item Player paints blocks while sliding on them.
+  \item See section \ref{sec:painting} for more details.
+\end{itemize}
+
+\subsection{Obstacle traversing}
+\begin{itemize}
+  \item The player gets challenged by several different obstacles.
+  \item See section \ref{sec:obstacles} for more details.
+\end{itemize}
+
+\subsection{Rhythm and music based gameplay}
+\begin{itemize}
+  \item Gameplay is defined by the rhythm of the music.
+  \item See section \ref{sec:music} for music mechanics and section 4.2 for music types.
+\end{itemize}
+
+\subsection{Controls}
+Consists of 5 keys W, S, 1, 2, 3. See section \ref{sec:controls}.
+
+\subsection{Movement}
+The player is a 2D shape that is level specific and that slides on the lanes. See section \ref{sec:movement}.
+
+\subsection{Game Loop}
+\begin{enumerate}
+  \item Start/Choose Level
+  \item The player attempts to navigate obstacles.
+  \item Success: Level Complete. Go next Level.
+  \item Failure: respawn at start.
+\end{enumerate}
+
+\section{Player Object (Shape)}
+\label{sec:player}
+\begin{itemize}
+  \item The player is a 2D SHAPE that slides on the lanes.
+  \item Shapes are cube, triangle, rectangle and hexagon.
+  \item Can jump between lanes.
+  \item Paints the blocks and tries to fill every block in the lanes with paint.
+  \item Painting blocks earns completion percentage to pass the level.
+  \item Switches paint from the hot-bar.
+  \item Can traverse around obstacles.
+  \item Level specific 2D shape.
+  \item Has an offset on the screen location (close to the left side of the screen).
+\end{itemize}
+
+\section{Movement}
+\label{sec:movement}
+\begin{itemize}
+  \item The movement is physics based.
+  \item The player moves automatically at a constant speed (based on the music BPM).
+  \item The player can switch between lanes with a jump and stick movement.
+  \item Upwards and downwards key presses in a row moves 2D shape to the same lane (Tap-Tap press).
+  \item Movement is not hindered by painting (speed remains the same).
+  \item Cannot traverse through obstacles.
+  \item Can use portals to navigate obstacles.
+  \item Some obstacles won\'t kill but stop the player.
+  \item Camera tracks the 2D shape from a distance while moving; camera does not shake.
+\end{itemize}
+
+\section{Painting}
+\label{sec:painting}
+\begin{itemize}
+  \item Lanes consist of blocks that can be painted while the player object slides on them; the player gains progress percentage as they paint blocks.
+  \item The player object starts the level as grey with a specific color in the hotbar.
+  \begin{itemize}
+    \item A specific color (red, blue, green) given for the level and can be used until end of level.
+  \end{itemize}
+  \item Painted color depends on the player object\'s color at the moment of the painting action. Painting starts after the color change.
+  \item While the player object has a color different from grey, it paints (e.g., Green paints green).
+\end{itemize}
+
+\section{Obstacles and Hazards}
+\label{sec:obstacles}
+\subsection{Spikes/Saws}
+\begin{enumerate}
+  \item Immediate death upon contact.
+  \item Saws have rotation.
+  \item Saws have horizontal and vertical movement.
+  \item Saw movement distances are varied.
+  \item Saw movements have patterns (e.g. sin, cos, square, etc.).
+\end{enumerate}
+
+\subsection{Empty spaces or Void}
+\begin{itemize}
+  \item Immediate death if player falls into void.
+  \item If the void is in the upper lane the player falls upwards; if in lower lane falls downwards.
+\end{itemize}
+
+\subsection{Walls}
+\begin{itemize}
+  \item Solid terrain that can stop the player.
+  \item If the player gets stuck for 2 seconds and leaves the camera view it causes instant death.
+  \item Time of being stuck is affected by music BPM:
+  \begin{itemize}
+    \item Low: 2 seconds
+    \item Medium: 1.2 seconds
+    \item High: 0.8 seconds
+  \end{itemize}
+\end{itemize}
+
+\subsection{Springs}
+\begin{itemize}
+  \item Launches the player in a specific direction; has an arrow indicating direction.
+  \item Directions: Right, Left, Upwards, Right-Left Upwards.
+\end{itemize}
+
+\subsection{Sticky Surface}
+\begin{itemize}
+  \item Prevents the player from moving when colliding; slows down by 90 percent.
+  \item Speed is regained in 2 seconds.
+\end{itemize}
+
+\subsection{Portals}
+\begin{itemize}
+  \item Change the player\'s location; have an entry and an exit portal.
+\end{itemize}
+
+\subsection{Black-Holes/Gravity Well}
+\begin{itemize}
+  \item Pulls player towards trap center; collision with center causes death.
+  \item Pull effect influences player movement and always moves player toward the trap center.
+\end{itemize}
+
+\subsection{Zones}
+\begin{itemize}
+  \item Require the player to have a specific colour equipped to enter and move on.
+  \item Stationed in the pathway toward level end; have distinctive color flash representing required colour.
+  \item If the required color is not equipped when entering, player cannot enter; player cannot jump between lanes; player slows significantly (e.g., to 25 \% speed).
+  \item If player remains in effect for 3 seconds player dies; music fades out in slow effect.
+  \item These areas have grey blocks and some different coloured blocks; touching different colours causes death.
+\end{itemize}
+
+\subsection{Colored Blocks on the lanes}
+\begin{itemize}
+  \item If the player touches blocks with a different color they will die.
+  \item For example: if player is red and touches blue block they die. Switching to blue allows touching blue blocks.
+\end{itemize}
+
+\section{Controls}
+\label{sec:controls}
+\begin{itemize}
+  \item W to jump and stick upwards to the upper lane.
+  \item S to jump and stick downwards to the lower lane.
+  \item Alphanumeric 1, 2, 3 changes color accordingly to the available colors on the hot-bar.
+\end{itemize}
+
+\section{Music Mechanics}
+\label{sec:music}
+\begin{itemize}
+  \item 3 Music BPM rates that change game speed.
+  \item Speed rates affect 2D shape speed and obstacles.
+  \item Difficulty and music speed increases as levels progress.
+\end{itemize}
+
+\begin{center}
+\begin{tabular}{ll}
+BPM & DIFFICULTY \\\hline
+60 & Slow/Easy \\
+100 & Medium/Normal \\
+140+ & Fast/Hard \\
+\end{tabular}
+\end{center}
+
+\section{Camera}
+\begin{itemize}
+  \item The camera is in the middle of the screen and follows when the player object enters the screen.
+  \item Resets itself to the player object if the player manages to get unstuck.
+\end{itemize}
+
+\chapter{Level Design and Structure}
+\section{Levels}
+\subsection{Progression}
+\begin{itemize}
+  \item Levels are unlocked sequentially, increasing in difficulty.
+  \item Every level at least requires 75 percent to be completed so the next level can be unlocked.
+  \item Additional completion endings: 90--99\% and 100\%.
+  \item Perfecting (100\%) 10 levels in a difficulty opens an extra level in every difficulty (3 extra levels total).
+  \item Percentage is calculated by amount of blocks painted by the player shape.
+\end{itemize}
+
+\subsection{Music Synchronization}
+\begin{itemize}
+  \item Every hazard and jump must be synched with the level's background music — most important level design rule.
+  \item OFFSET is between 0.2--0.3 seconds.
+\end{itemize}
+
+\subsection{Secret Brush}
+\begin{itemize}
+  \item Optional collectibles that unlock new levels.
+\end{itemize}
+
+\subsection{Distance and Magnitude of Elements in Level}
+\begin{itemize}
+  \item Gets calculated according to the player shape size (e.g., if player shape is 100x100, distances are calculated by 100).
+  \item All player 2D shapes have the same size (not necessarily same collider/hurtbox).
+\end{itemize}
+
+\subsection{Level Directions}
+\begin{itemize}
+  \item Directions include left-to-right, up-to-down, down-to-up.
+\end{itemize}
+
+\section{Gameplay Flow}
+% Placeholder for flow diagrams; add images as needed.
+\begin{figure}[ht]
+  \centering
+  \fbox{\parbox[c][3cm][c]{0.85\linewidth}{\centering image-place}}
+  \caption{Gameplay flow placeholder}
+\end{figure}
+
+\chapter{Art, Audio, and Presentation}
+\section{Art Style}
+\subsection{Aesthetics}
+Simple, distinct, and vibrant 2D vector/flat design.
+
+\subsection{Visual Feedback}
+\begin{itemize}
+  \item Clear, distinct death animations and sparkle effects, color changes and effects.
+  \item Player has a glowing outline.
+  \item Painting effects have a liquid splash effect.
+\end{itemize}
+
+\subsection{Customization}
+\begin{itemize}
+  \item Player object changes color with the equipped color.
+  \item When a paint gets picked up, the player shape changes color.
+  \item No skin or player customization.
+\end{itemize}
+
+\subsection{Background}
+\begin{itemize}
+  \item Background is a scroller that repeats depending on movement direction.
+  \item Levels are static (not infinite).
+\end{itemize}
+
+\section{Audio}
+\subsection{3 Beat Types}
+\begin{itemize}
+  \item 60
+  \item 100
+  \item 140+
+\end{itemize}
+
+\subsection{Music}
+High-energy electronic/house or 80's Groove and Wave style. New music types added for new difficulties and levels.
+
+\subsection{Sound Effects (SFX)}
+\begin{itemize}
+  \item Minimalist, distinct sounds
+  \item Jumping/lane change (pop) 
+  \item Slide while moving on lanes (brush)
+  \item Death (spill)
+  \item Collectibles/Pickup (squeeze)
+\end{itemize}
+
+\section{User Interface (UI)}
+\subsection{General}
+\begin{itemize}
+  \item Performance overlay in the UI on the bottom-left corner (version, FPS, frame time); can be toggled; game version cannot be hidden.
+\end{itemize}
+
+\subsection{Main Menu}
+UI order:
+\begin{enumerate}
+  \item Continue (from last played level's beginning)
+  \item New Game (start from first level)
+  \item Level Selector
+  \item Settings
+  \item Exit
+\end{enumerate}
+Has itch, github, steam (future) icons with hyperlinks in the bottom-right corner.
+
+\subsection{Heads-Up Display (HUD)}
+\begin{itemize}
+  \item Progress bar for current level at top-middle with percentage.
+  \item Available paints hot-bar at bottom-middle; equipped color shines.
+  \item Gear (metal) icon top-right to access Pause Menu; ESC also opens pause.
+\end{itemize}
+
+\subsection{Pause Menu}
+\begin{itemize}
+  \item Opens via ESC or gear icon; time scales down to 35\%.
+  \item Options: Continue, Restart, Return to Main Menu, Settings (sound, display, controls).
+  \item Has Performance Overlay check button to toggle frame time and FPS.
+\end{itemize}
+
+\subsection{Settings Panel}
+\begin{itemize}
+  \item Sound sliders and ranges: Master (20--100), Music (20--100), Effects (0--100); slider shows numeric value.
+  \item Return button re-opens Pause Menu; ESC closes panel and resumes game.
+  \item Display section: Display Modes (Windowed, Borderless, Exclusive Fullscreen) with checkboxes; resolution arrows to change.
+  \item Controls: All controls can be remapped; requires Enter to confirm change.
+\end{itemize}
+
+\subsection{Endgame Screen - Win Conditions}
+\begin{itemize}
+  \item Win writing pop-up in middle with neon coloring and shining outline.
+  \item 75--89\%: "GROOVY"
+  \item 90--99\%: "INFERNAL"
+  \item 100\%: "PERFECT GROOVE"
+\end{itemize}
+
+\subsection{Endgame Screen - Fail Conditions}
+\begin{itemize}
+  \item If painting percentage is below 75\% at level end: displays "Needs More Passion".
+  \item If player dies: shows cause of death and buttons: Green Retry (restart level) and Return to Main Menu.
+\end{itemize}
+
+\subsection{Level Selector}
+\begin{itemize}
+  \item Select from all unlocked levels. Levels are shown as pages (Easy / Medium / Hard).
+  \item Completed levels show green disco balls: 75--89\% = 1 ball, 90--99\% = 2 balls, 100\% = 3 balls.
+  \item Locked levels are grayed with black lock icon; uncompleted levels have no disco ball but are not grayed.
+  \item Levels per page: 10 (2 rows of 5); page traverse with left/right arrows; cycle: EASY -> MEDIUM -> HARD.
+\end{itemize}
+
+\subsection{Continue}
+Loads last played level from the beginning.
+
+\subsection{Exit}
+Exits the game.
+
+\section{Settings}
+\begin{center}
+\begin{tabular}{ll}
+WINDOW MODE & MINIMUM DYNAMIC RESOLUTION \\\hline
+FULLSCREEN & Suggested 1280x720p \\
+BORDERLESS & Suggested 1280x720p \\
+WINDOWED & Suggested 1280x720p \\
+\end{tabular}
+\end{center}
+
+\noindent Settings directories:
+\begin{itemize}
+  \item Linux: \texttt{~/.local/share/godot/app\_userdata/painting-fever/settings.cfg}
+  \item Windows: \texttt{\%AppData\%\\Godot\\app\_userdata\\painting-fever\\settings.cfg}
+\end{itemize}
+
+\chapter{Project Scope}
+\section{Platforms}
+\begin{center}
+\begin{tabular}{ll}
+PLATFORMS & RENDERING API \\\hline
+Linux & Forward+ (Vulkan) \\
+Windows & Forward+ (Vulkan) \\
+Web & Compatibility (OpenGL) \\
+\end{tabular}
+\end{center}
+
+\section{Technology}
+\subsection{Game Engine}
+Godot 4.5.1 (may be updated in development phase).
+
+\subsection{Programming Language}
+C\#, GDScript.
+
+\subsection{Source}
+Open, GPL v3.0 license.
+
+\section{Multiplayer/Online Features}
+There are no multiplayer aspects in the game.
+
+\section{Monetization}
+\begin{itemize}
+  \item Donations.
+  \item Download and play.
+\end{itemize}
+
+\section{In the Future}
+\begin{itemize}
+  \item Additional Platforms: Android
+  \item Steam integration.
+  \item Single player system.
+  \item Possible future monetization in Steam sales (additional DLC).
+  \item Possible future monetization on itch.io via sales.
+  \item Multiple language translations may be added.
+\end{itemize}
+
+\section{Accessibility}
+\begin{itemize}
+  \item Single language: English.
+  \item Has colorblind filters.
+\end{itemize}
+
+\vfill
+\noindent Generated from the uploaded PDF.
+
+\end{document}
