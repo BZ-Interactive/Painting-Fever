@@ -1,0 +1,966 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Painting Fever — Music-Driven Painting Platformer</title>
+  <link href="https://fonts.googleapis.com/css2?family=Russo+One&family=Share+Tech+Mono&family=Exo+2:wght@300;400;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --c-bg: #05040f;
+      --c-ink: #e8f4ff;
+      --c-red: #ff2d6b;
+      --c-yellow: #ffe600;
+      --c-blue: #00cfff;
+      --c-teal: #00ffcc;
+      --c-purple: #bf00ff;
+      --c-orange: #ff6b00;
+      --c-pink: #ff4fae;
+      --c-green: #39ff14;
+
+      --glow-red:    0 0 8px #ff2d6b, 0 0 24px #ff2d6b80;
+      --glow-yellow: 0 0 8px #ffe600, 0 0 24px #ffe60080;
+      --glow-blue:   0 0 8px #00cfff, 0 0 24px #00cfff80;
+      --glow-teal:   0 0 8px #00ffcc, 0 0 24px #00ffcc80;
+      --glow-purple: 0 0 8px #bf00ff, 0 0 24px #bf00ff80;
+      --glow-pink:   0 0 8px #ff4fae, 0 0 24px #ff4fae80;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--c-bg);
+      color: var(--c-ink);
+      font-family: 'Exo 2', sans-serif;
+      overflow-x: hidden;
+      cursor: crosshair;
+    }
+
+    /* Scanline overlay for CRT feel */
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      z-index: 500;
+      pointer-events: none;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(0,0,0,0.07) 2px,
+        rgba(0,0,0,0.07) 4px
+      );
+    }
+
+    /* ── LAVA LAMP BACKGROUND ── */
+    #paint-bg {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      overflow: hidden;
+      background: #05040f;
+    }
+
+    #lava-canvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    .splatter {
+      position: absolute;
+      border-radius: 50%;
+      animation: splat-in 0.4s ease-out both;
+      pointer-events: none;
+    }
+
+    @keyframes splat-in {
+      from { transform: scale(0); opacity: 1; }
+      to   { transform: scale(1); opacity: 0.7; }
+    }
+
+    /* ── LAYOUT ── */
+    .wrapper {
+      position: relative;
+      z-index: 1;
+      max-width: 1140px;
+      margin: 0 auto;
+      padding: 0 28px;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(16px);
+      background: rgba(5,4,15,0.85);
+      border-bottom: 1px solid var(--c-blue);
+      box-shadow: 0 1px 0 rgba(0,207,255,0.15), var(--glow-blue);
+    }
+
+    .nav-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 28px;
+      max-width: 1140px;
+      margin: 0 auto;
+    }
+
+    .nav-logo {
+      font-family: 'Russo One', sans-serif;
+      font-size: 1.5rem;
+      letter-spacing: 0.06em;
+      color: var(--c-yellow);
+      text-decoration: none;
+      text-shadow: var(--glow-yellow);
+    }
+
+    .nav-logo span {
+      color: var(--c-red);
+      text-shadow: var(--glow-red);
+    }
+
+    .nav-links { display: flex; gap: 28px; }
+
+    .nav-links a {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.72rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: rgba(0,207,255,0.55);
+      text-decoration: none;
+      transition: color 0.2s, text-shadow 0.2s;
+    }
+
+    .nav-links a:hover {
+      color: var(--c-blue);
+      text-shadow: var(--glow-blue);
+    }
+
+    /* ── HERO ── */
+    #hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 120px 0 80px;
+    }
+
+    .hero-eyebrow {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.72rem;
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+      color: var(--c-teal);
+      text-shadow: var(--glow-teal);
+      margin-bottom: 22px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .hero-eyebrow::before {
+      content: '';
+      display: inline-block;
+      width: 36px; height: 2px;
+      background: var(--c-teal);
+      box-shadow: var(--glow-teal);
+    }
+
+    .hero-title {
+      font-family: 'Russo One', sans-serif;
+      font-size: clamp(4.5rem, 13vw, 11rem);
+      line-height: 0.92;
+      letter-spacing: 0.03em;
+      color: var(--c-ink);
+    }
+
+    .hero-title .stroke {
+      -webkit-text-stroke: 2px var(--c-red);
+      color: transparent;
+      filter: drop-shadow(0 0 12px var(--c-red));
+    }
+
+    .hero-title .accent {
+      color: var(--c-yellow);
+      text-shadow: var(--glow-yellow);
+    }
+
+    .hero-sub {
+      margin-top: 28px;
+      font-size: 1.05rem;
+      font-weight: 300;
+      color: rgba(232,244,255,0.65);
+      max-width: 500px;
+      line-height: 1.7;
+      letter-spacing: 0.01em;
+    }
+
+    .hero-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 32px;
+    }
+
+    .badge {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      padding: 5px 12px;
+      border-radius: 2px;
+      border: 1px solid;
+    }
+
+    .badge-ver  { border-color: var(--c-blue);   color: var(--c-blue);   box-shadow: var(--glow-blue),   inset 0 0 8px rgba(0,207,255,0.05); }
+    .badge-lic  { border-color: var(--c-yellow);  color: var(--c-yellow); box-shadow: var(--glow-yellow), inset 0 0 8px rgba(255,230,0,0.05); }
+    .badge-eng  { border-color: var(--c-teal);    color: var(--c-teal);   box-shadow: var(--glow-teal),   inset 0 0 8px rgba(0,255,204,0.05); }
+    .badge-stat { border-color: var(--c-pink);    color: var(--c-pink);   box-shadow: var(--glow-pink),   inset 0 0 8px rgba(255,79,174,0.05); }
+
+    .hero-cta {
+      display: flex;
+      gap: 16px;
+      margin-top: 44px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.78rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      text-decoration: none;
+      padding: 13px 28px;
+      border-radius: 2px;
+      transition: transform 0.18s, box-shadow 0.18s;
+      clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px));
+    }
+
+    .btn:hover { transform: translateY(-2px); }
+
+    .btn-primary {
+      background: var(--c-red);
+      color: #fff;
+      box-shadow: var(--glow-red);
+    }
+
+    .btn-primary:hover { box-shadow: 0 0 16px #ff2d6b, 0 0 48px #ff2d6b; }
+
+    .btn-ghost {
+      border: 1px solid var(--c-blue);
+      color: var(--c-blue);
+      background: rgba(0,207,255,0.05);
+      box-shadow: var(--glow-blue);
+    }
+
+    .btn-ghost:hover {
+      border-color: var(--c-yellow);
+      color: var(--c-yellow);
+      box-shadow: var(--glow-yellow);
+    }
+
+    /* ── BPM VISUALIZER ── */
+    .bpm-bar {
+      display: flex;
+      align-items: flex-end;
+      gap: 3px;
+      height: 44px;
+      margin-top: 56px;
+    }
+
+    .bpm-bar span {
+      display: block;
+      width: 5px;
+      border-radius: 1px 1px 0 0;
+      animation: bpm-pulse ease-in-out infinite alternate;
+    }
+
+    @keyframes bpm-pulse {
+      from { transform: scaleY(0.15); opacity: 0.3; }
+      to   { transform: scaleY(1);    opacity: 1; }
+    }
+
+    .bpm-label {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.6rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: rgba(0,207,255,0.35);
+      margin-top: 10px;
+    }
+
+    /* ── SECTION TITLE ── */
+    .section-head {
+      display: flex;
+      align-items: baseline;
+      gap: 18px;
+      margin-bottom: 48px;
+    }
+
+    .section-title {
+      font-family: 'Russo One', sans-serif;
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      letter-spacing: 0.05em;
+      color: var(--c-yellow);
+      text-shadow: var(--glow-yellow);
+    }
+
+    .section-line {
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(90deg, rgba(0,207,255,0.4), transparent);
+      box-shadow: 0 0 6px rgba(0,207,255,0.2);
+    }
+
+    /* ── CARDS GRID ── */
+    #cards { padding: 100px 0; }
+
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 20px;
+    }
+
+    .card {
+      border-radius: 2px;
+      border: 1px solid rgba(0,207,255,0.18);
+      background: rgba(5,4,15,0.75);
+      backdrop-filter: blur(10px);
+      padding: 30px;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.22s, border-color 0.22s, box-shadow 0.22s;
+      clip-path: polygon(0 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 14px 100%, 0 calc(100% - 14px));
+    }
+
+    /* Corner accent marks */
+    .card::after {
+      content: '';
+      position: absolute;
+      top: 0; right: 0;
+      width: 14px; height: 14px;
+      border-top: 2px solid;
+      border-right: 2px solid;
+    }
+
+    .card--github::after   { border-color: var(--c-teal); }
+    .card--docs::after     { border-color: var(--c-yellow); }
+    .card--features::after { border-color: var(--c-purple); }
+    .card--web::after      { border-color: var(--c-red); }
+
+    .card:not(.card--disabled):hover {
+      transform: translateY(-4px);
+    }
+
+    .card--github:hover   { border-color: var(--c-teal);   box-shadow: 0 0 20px rgba(0,255,204,0.2),  0 0 60px rgba(0,255,204,0.06); }
+    .card--docs:hover     { border-color: var(--c-yellow);  box-shadow: 0 0 20px rgba(255,230,0,0.2),  0 0 60px rgba(255,230,0,0.06); }
+    .card--features:hover { border-color: var(--c-purple);  box-shadow: 0 0 20px rgba(191,0,255,0.2),  0 0 60px rgba(191,0,255,0.06); }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+    }
+
+    .card--github::before   { background: var(--c-teal);   box-shadow: var(--glow-teal); }
+    .card--docs::before     { background: var(--c-yellow);  box-shadow: var(--glow-yellow); }
+    .card--features::before { background: var(--c-purple);  box-shadow: var(--glow-purple); }
+    .card--web::before      { background: var(--c-red);     box-shadow: var(--glow-red); }
+
+    .card--disabled {
+      opacity: 0.38;
+      filter: grayscale(0.6);
+      cursor: not-allowed;
+    }
+
+    .card-tag {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.6rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      padding: 3px 9px;
+      border-radius: 1px;
+      display: inline-block;
+      margin-bottom: 18px;
+      border: 1px solid;
+    }
+
+    .tag-live   { border-color: var(--c-teal);   color: var(--c-teal);   background: rgba(0,255,204,0.07);  box-shadow: var(--glow-teal); }
+    .tag-docs   { border-color: var(--c-yellow);  color: var(--c-yellow); background: rgba(255,230,0,0.07);  box-shadow: var(--glow-yellow); }
+    .tag-soon   { border-color: var(--c-purple);  color: var(--c-purple); background: rgba(191,0,255,0.07);  box-shadow: var(--glow-purple); }
+    .tag-coming { border-color: var(--c-pink);    color: var(--c-pink);   background: rgba(255,79,174,0.07); box-shadow: var(--glow-pink); }
+
+    .card-icon {
+      font-size: 2.2rem;
+      margin-bottom: 14px;
+      display: block;
+      filter: drop-shadow(0 0 8px currentColor);
+    }
+
+    .card-title {
+      font-family: 'Russo One', sans-serif;
+      font-size: 1.5rem;
+      letter-spacing: 0.04em;
+      margin-bottom: 10px;
+      color: var(--c-ink);
+    }
+
+    .card-desc {
+      font-size: 0.86rem;
+      line-height: 1.65;
+      color: rgba(232,244,255,0.5);
+      margin-bottom: 22px;
+      font-weight: 300;
+    }
+
+    .card-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.68rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      text-decoration: none;
+      transition: gap 0.2s, text-shadow 0.2s;
+    }
+
+    .card--github   .card-link { color: var(--c-teal); }
+    .card--docs     .card-link { color: var(--c-yellow); }
+    .card--features .card-link { color: var(--c-purple); }
+
+    .card--github   .card-link:hover { text-shadow: var(--glow-teal); gap: 10px; }
+    .card--docs     .card-link:hover { text-shadow: var(--glow-yellow); gap: 10px; }
+    .card--features .card-link:hover { text-shadow: var(--glow-purple); gap: 10px; }
+
+    .card-link svg { width: 13px; height: 13px; }
+
+    .coming-soon-badge {
+      position: absolute;
+      top: 18px; right: 22px;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.58rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      padding: 3px 7px;
+      border: 1px solid var(--c-purple);
+      border-radius: 1px;
+      color: var(--c-purple);
+      background: rgba(191,0,255,0.08);
+      box-shadow: var(--glow-purple);
+    }
+
+    /* ── FEATURES IN DEV ── */
+    #features { padding: 60px 0 100px; }
+
+    .features-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 2px;
+      border: 1px solid rgba(0,207,255,0.12);
+      border-radius: 2px;
+      overflow: hidden;
+      box-shadow: 0 0 30px rgba(0,207,255,0.04);
+    }
+
+    .feature-item {
+      padding: 22px 26px;
+      background: rgba(5,4,15,0.6);
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      transition: background 0.2s;
+      border: 1px solid transparent;
+    }
+
+    .feature-item:hover {
+      background: rgba(0,207,255,0.04);
+      border-color: rgba(0,207,255,0.1);
+    }
+
+    .feature-dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      margin-top: 6px;
+      flex-shrink: 0;
+      box-shadow: 0 0 6px currentColor;
+    }
+
+    .feature-text {
+      font-size: 0.86rem;
+      color: rgba(232,244,255,0.6);
+      line-height: 1.5;
+    }
+
+    .feature-text strong {
+      display: block;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.82rem;
+      letter-spacing: 0.06em;
+      color: var(--c-ink);
+      margin-bottom: 3px;
+    }
+
+    /* ── NEON DIVIDER ── */
+    .stroke-divider {
+      width: 100%;
+      height: 2px;
+      background: linear-gradient(90deg,
+        transparent 0%,
+        var(--c-red) 15%, var(--c-yellow) 35%,
+        var(--c-teal) 55%, var(--c-blue) 75%,
+        var(--c-purple) 90%, transparent 100%);
+      box-shadow: 0 0 10px rgba(0,207,255,0.5), 0 0 30px rgba(191,0,255,0.2);
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid rgba(0,207,255,0.12);
+      padding: 48px 0;
+      box-shadow: 0 -1px 0 rgba(0,207,255,0.05);
+    }
+
+    .footer-inner {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      flex-wrap: wrap;
+      gap: 24px;
+    }
+
+    .footer-logo {
+      font-family: 'Russo One', sans-serif;
+      font-size: 1.8rem;
+      letter-spacing: 0.06em;
+      color: var(--c-yellow);
+      text-shadow: var(--glow-yellow);
+    }
+
+    .footer-logo span {
+      color: var(--c-red);
+      text-shadow: var(--glow-red);
+    }
+
+    .footer-meta {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.63rem;
+      letter-spacing: 0.12em;
+      color: rgba(0,207,255,0.3);
+      line-height: 1.9;
+      text-align: right;
+    }
+
+    .footer-meta a {
+      color: rgba(0,207,255,0.5);
+      text-decoration: none;
+      transition: color 0.2s, text-shadow 0.2s;
+    }
+
+    .footer-meta a:hover {
+      color: var(--c-blue);
+      text-shadow: var(--glow-blue);
+    }
+
+    /* ── CURSOR SPLAT ── */
+    #cursor-splat {
+      position: fixed;
+      pointer-events: none;
+      z-index: 999;
+      width: 0; height: 0;
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 640px) {
+      .nav-links { display: none; }
+      .hero-cta { flex-direction: column; }
+      .footer-inner { flex-direction: column; align-items: flex-start; }
+      .footer-meta { text-align: left; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Lava lamp background -->
+<div id="paint-bg">
+  <canvas id="lava-canvas"></canvas>
+</div>
+
+<!-- Cursor splatter container -->
+<div id="cursor-splat"></div>
+
+<!-- Nav -->
+<nav>
+  <div class="nav-inner">
+    <a href="#" class="nav-logo">Painting<span>Fever</span></a>
+    <div class="nav-links">
+      <a href="#cards">Explore</a>
+      <a href="#features">Features</a>
+      <a href="https://github.com/BZ-Interactive/Painting-Fever" target="_blank">GitHub</a>
+    </div>
+  </div>
+</nav>
+
+<!-- Hero -->
+<section id="hero">
+  <div class="wrapper">
+    <p class="hero-eyebrow">BZ Interactive · Open Source</p>
+    <h1 class="hero-title">
+      <a href="https://github.com/BZ-Interactive/Painting-Fever" target="_blank" style="text-decoration:none;color:inherit;">Painting<br>
+      <span class="stroke">Fever</span></a><span class="accent">.</span>
+    </h1>
+    <p class="hero-sub">
+      A 2D platformer where music drives every move. Slide through levels, paint walls to progress, and stay locked to the beat.
+    </p>
+    <div class="hero-badges">
+      <span class="badge badge-ver">v0.1</span>
+      <span class="badge badge-lic">GPL-3.0</span>
+      <span class="badge badge-eng">Godot 4.5.1 Mono</span>
+      <span class="badge badge-stat">Early Dev</span>
+    </div>
+    <div class="hero-cta">
+      <a href="https://github.com/BZ-Interactive/Painting-Fever" target="_blank" class="btn btn-primary">
+        <svg viewBox="0 0 24 24" fill="currentColor" width="16"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+        View on GitHub
+      </a>
+      <a href="https://media.githubusercontent.com/media/BZ-Interactive/Painting-Fever/refs/heads/main/Documents/Painting%20Fever%20GDD.pdf" target="_blank" class="btn btn-ghost">
+        Read GDD
+      </a>
+      <a href="https://media.githubusercontent.com/media/BZ-Interactive/Painting-Fever/refs/heads/main/Documents/Painting-Fever_TDD.pdf" target="_blank" class="btn btn-ghost">
+        Read TDD
+      </a>
+    </div>
+
+    <!-- BPM visualizer -->
+    <div class="bpm-bar" id="bpmBar"></div>
+    <p class="bpm-label">♩ synced to the beat</p>
+  </div>
+</section>
+
+<div class="stroke-divider"></div>
+
+<!-- Cards -->
+<section id="cards">
+  <div class="wrapper">
+    <div class="section-head">
+      <h2 class="section-title">Explore</h2>
+      <div class="section-line"></div>
+    </div>
+    <div class="cards-grid">
+
+      <!-- Card 1: GitHub Repo -->
+      <div class="card card--github">
+        <span class="card-tag tag-live">Live</span>
+        <span class="card-icon">⚙️</span>
+        <h3 class="card-title">Source Code</h3>
+        <p class="card-desc">Dig into the Godot 4 project. Built in C# &amp; GDScript with a custom BPM-sync system and procedural paint mechanics.</p>
+        <a href="https://github.com/BZ-Interactive/Painting-Fever" target="_blank" class="card-link">
+          Open Repository
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+      </div>
+
+      <!-- Card 2: GDD -->
+      <div class="card card--docs">
+        <span class="card-tag tag-docs">Document</span>
+        <span class="card-icon">🎨</span>
+        <h3 class="card-title">Game Design Doc</h3>
+        <p class="card-desc">The full GDD covering vision, mechanics, art direction, and level design philosophy for Painting Fever.</p>
+        <a href="https://media.githubusercontent.com/media/BZ-Interactive/Painting-Fever/refs/heads/main/Documents/Painting%20Fever%20GDD.pdf" target="_blank" class="card-link">
+          Read GDD (PDF)
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+      </div>
+
+      <!-- Card 3: TDD -->
+      <div class="card card--docs">
+        <span class="card-tag tag-docs">Document</span>
+        <span class="card-icon">🔧</span>
+        <h3 class="card-title">Technical Design Doc</h3>
+        <p class="card-desc">Architecture decisions, BPM-sync engine design, rendering pipeline notes, and Godot-specific implementation details.</p>
+        <a href="https://media.githubusercontent.com/media/BZ-Interactive/Painting-Fever/refs/heads/main/Documents/Painting-Fever_TDD.pdf" target="_blank" class="card-link">
+          Read TDD (PDF)
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+      </div>
+
+      <!-- Card 4: Web Build (Coming Soon) -->
+      <div class="card card--web card--disabled">
+        <div class="coming-soon-badge">Coming Soon</div>
+        <span class="card-tag tag-soon">Planned</span>
+        <span class="card-icon">🌐</span>
+        <h3 class="card-title">Play in Browser</h3>
+        <p class="card-desc">A web export of Painting Fever playable directly in your browser — no install needed. Coming once the core loop is solid.</p>
+        <span class="card-link" style="opacity:0.4;cursor:not-allowed;">
+          Not yet available
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </span>
+      </div>
+
+      <!-- Card 5: Soundtrack (Coming Soon) -->
+      <div class="card card--features card--disabled">
+        <div class="coming-soon-badge">Coming Soon</div>
+        <span class="card-tag tag-soon">Planned</span>
+        <span class="card-icon">🎵</span>
+        <h3 class="card-title">Soundtrack</h3>
+        <p class="card-desc">The original BPM-mapped tracks that drive Painting Fever's gameplay will be released alongside the game demo.</p>
+        <span class="card-link" style="opacity:0.4;cursor:not-allowed;">
+          Not yet available
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </span>
+      </div>
+
+      <!-- Card 6: Devlog (Coming Soon) -->
+      <div class="card card--features card--disabled">
+        <div class="coming-soon-badge">Coming Soon</div>
+        <span class="card-tag tag-coming">Planned</span>
+        <span class="card-icon">📓</span>
+        <h3 class="card-title">Dev Log</h3>
+        <p class="card-desc">Behind-the-scenes posts on building BPM sync, paint shaders, and level scripting in Godot 4 Mono.</p>
+        <span class="card-link" style="opacity:0.4;cursor:not-allowed;">
+          Not yet available
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </span>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- Features in development -->
+<section id="features">
+  <div class="wrapper">
+    <div class="section-head">
+      <h2 class="section-title">In Development</h2>
+      <div class="section-line"></div>
+    </div>
+    <div class="features-list">
+      <div class="feature-item">
+        <div class="feature-dot" style="background:var(--c-red)"></div>
+        <div class="feature-text"><strong>Game End Screen</strong>Score tallying, paint coverage stats, replay.</div>
+      </div>
+      <div class="feature-item">
+        <div class="feature-dot" style="background:var(--c-teal)"></div>
+        <div class="feature-text"><strong>Wall Painting Mechanics</strong>The core loop — paint paths that only exist while the beat holds.</div>
+      </div>
+      <div class="feature-item">
+        <div class="feature-dot" style="background:var(--c-blue)"></div>
+        <div class="feature-text"><strong>Level Progress System</strong>Checkpoints, progress tracking, and completion grades.</div>
+      </div>
+      <div class="feature-item">
+        <div class="feature-dot" style="background:var(--c-purple)"></div>
+        <div class="feature-text"><strong>Music BPM Action Sync</strong>Every jump, splat, and obstacle gated to the music's tempo.</div>
+      </div>
+      <div class="feature-item">
+        <div class="feature-dot" style="background:var(--c-pink)"></div>
+        <div class="feature-text"><strong>Basic Platforming &amp; Movement</strong>Implemented ✓ — responsive controls already in place.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="stroke-divider"></div>
+
+<!-- Footer -->
+<footer>
+  <div class="wrapper">
+    <div class="footer-inner">
+      <div class="footer-logo">Painting<span>Fever</span></div>
+      <div class="footer-meta">
+        <div>GPL-3.0 License · BZ Interactive</div>
+        <div><a href="https://github.com/BZ-Interactive/Painting-Fever" target="_blank">github.com/BZ-Interactive/Painting-Fever</a></div>
+        <div style="margin-top:6px;opacity:0.5;">Built with Godot Engine 4.5 Mono</div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  /* ── LAVA LAMP CANVAS ── */
+  const canvas = document.getElementById('lava-canvas');
+  const ctx = canvas.getContext('2d');
+
+  const COLORS = [
+    [255,  45, 107],   // neon red/pink
+    [255, 230,   0],   // neon yellow
+    [  0, 207, 255],   // neon cyan
+    [  0, 255, 204],   // neon teal
+    [191,   0, 255],   // neon purple
+    [255, 107,   0],   // neon orange
+    [255,  79, 174],   // neon pink
+  ];
+
+  let W, H;
+  function resize() {
+    W = canvas.width  = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  // Organic blob: droopy paint-drop shape that responds to downward motion
+  function makeBlob(i) {
+    const [r,g,b] = COLORS[i % COLORS.length];
+    // We use a fixed angular layout — top half is compact, bottom is droopy
+    const numPts = 10;
+    const baseRadii = Array.from({length: numPts}, (_, k) => {
+      const angle = (k / numPts) * Math.PI * 2 - Math.PI / 2; // start at top
+      // Bottom points (facing down) get larger radii — the droop
+      const droopFactor = 1 + Math.max(0, Math.sin(angle)) * 0.7;
+      return (70 + Math.random() * 80) * droopFactor;
+    });
+    const phaseOffsets = Array.from({length: numPts}, () => Math.random() * Math.PI * 2);
+    const morphSpeeds  = Array.from({length: numPts}, (_, k) => {
+      const angle = (k / numPts) * Math.PI * 2 - Math.PI / 2;
+      // Bottom points morph faster — more wobbly droop
+      return 0.008 + Math.max(0, Math.sin(angle)) * 0.012;
+    });
+    return {
+      x: 80 + Math.random() * (window.innerWidth - 160),
+      y: -300 - Math.random() * 600,
+      speed: 0.28 + Math.random() * 0.18,
+      cr: r, cg: g, cb: b,
+      numPts, baseRadii, phaseOffsets, morphSpeeds,
+      t: 0,
+      prevY: 0,
+    };
+  }
+
+  const blobs = Array.from({ length: 8 }, (_, i) => {
+    const bl = makeBlob(i);
+    bl.y = -100 + Math.random() * (window.innerHeight + 500);
+    bl.prevY = bl.y;
+    return bl;
+  });
+
+  // Draw droopy shape — bottom stretches based on speed, top is pinched
+  function drawOrganicBlob(ctx, b, vy) {
+    const n = b.numPts;
+    // Vertical stretch: faster movement = more elongated droop downward
+    const stretch = 1 + Math.min(vy * 2.2, 0.55);
+
+    const pts = Array.from({length: n}, (_, k) => {
+      const baseAngle = (k / n) * Math.PI * 2 - Math.PI / 2; // 0 = top
+      const morph = 1 + Math.sin(b.t * b.morphSpeeds[k] + b.phaseOffsets[k]) * 0.22;
+      const r = b.baseRadii[k] * morph;
+
+      // Squeeze top (narrow), stretch bottom (droopy)
+      const isBottom = Math.sin(baseAngle) > 0;
+      const scaleY = isBottom ? stretch : (1 / (stretch * 0.6));
+      const scaleX = 1 / Math.sqrt(stretch); // conserve area roughly
+
+      return {
+        x: b.x + Math.cos(baseAngle) * r * scaleX,
+        y: b.y + Math.sin(baseAngle) * r * scaleY,
+      };
+    });
+
+    ctx.beginPath();
+    // Smooth catmull-rom style via midpoints
+    for (let k = 0; k < n; k++) {
+      const curr = pts[k];
+      const next = pts[(k + 1) % n];
+      const mid  = { x: (curr.x + next.x) / 2, y: (curr.y + next.y) / 2 };
+      if (k === 0) ctx.moveTo(mid.x, mid.y);
+      ctx.quadraticCurveTo(curr.x, curr.y, mid.x, mid.y);
+    }
+    ctx.closePath();
+    ctx.fillStyle = `rgba(${b.cr},${b.cg},${b.cb},0.75)`;
+    ctx.shadowColor = `rgb(${b.cr},${b.cg},${b.cb})`;
+    ctx.shadowBlur = 28;
+    ctx.fill();
+    ctx.shadowBlur = 0;
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = '#05040f';
+    ctx.fillRect(0, 0, W, H);
+
+    for (const b of blobs) {
+      b.t++;
+      b.prevY = b.y;
+      b.y += b.speed;
+
+      const vy = b.y - b.prevY; // actual downward velocity this frame
+
+      if (b.y - 350 > H) {
+        const idx = blobs.indexOf(b);
+        const fresh = makeBlob(idx);
+        Object.assign(b, fresh);
+      }
+
+      drawOrganicBlob(ctx, b, vy);
+    }
+
+    const vig = ctx.createRadialGradient(W/2, H/2, H * 0.1, W/2, H/2, H * 0.82);
+    vig.addColorStop(0, 'rgba(5,4,15,0.35)');
+    vig.addColorStop(1, 'rgba(5,4,15,0.91)');
+    ctx.fillStyle = vig;
+    ctx.fillRect(0, 0, W, H);
+
+  requestAnimationFrame(draw);
+  }
+
+  requestAnimationFrame(draw);
+
+  /* ── BPM BAR ── */
+  const bpmColors = ['#ff2d6b','#ffe600','#00cfff','#00ffcc','#bf00ff','#ff6b00','#ff4fae'];
+  const bpmBar = document.getElementById('bpmBar');
+  const barCount = 24;
+  for (let i = 0; i < barCount; i++) {
+    const s = document.createElement('span');
+    const h = 12 + Math.random() * 36;
+    s.style.cssText = `
+      height:${h}px;
+      animation-duration:${0.35 + Math.random() * 0.55}s;
+      animation-delay:${-Math.random() * 0.8}s;
+      background:${bpmColors[i % bpmColors.length]};
+      box-shadow: 0 0 6px ${bpmColors[i % bpmColors.length]};
+    `;
+    bpmBar.appendChild(s);
+  }
+
+  /* ── CURSOR PAINT SPLAT ── */
+  const colors = ['#ff2d6b','#ffe600','#00cfff','#00ffcc','#bf00ff','#ff6b00','#ff4fae'];
+
+  document.addEventListener('mousemove', (e) => {
+    if (Math.random() > 0.97) spawnSplat(e.clientX, e.clientY, 6 + Math.random() * 12);
+  });
+
+  document.addEventListener('click', (e) => {
+    for (let i = 0; i < 6; i++) {
+      const ox = (Math.random() - 0.5) * 60;
+      const oy = (Math.random() - 0.5) * 60;
+      spawnSplat(e.clientX + ox, e.clientY + oy, 8 + Math.random() * 20);
+    }
+  });
+
+  function spawnSplat(x, y, size) {
+    const el = document.createElement('div');
+    el.className = 'splatter';
+    el.style.cssText = `
+      position:fixed;
+      left:${x - size/2}px; top:${y - size/2}px;
+      width:${size}px; height:${size}px;
+      background:${colors[Math.floor(Math.random() * colors.length)]};
+      opacity:0.7;
+      pointer-events:none;
+      z-index:998;
+    `;
+    document.body.appendChild(el);
+    setTimeout(() => el.remove(), 2500);
+  }
+</script>
+</body>
+</html>
