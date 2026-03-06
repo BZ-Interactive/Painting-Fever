@@ -18,6 +18,10 @@
   </ol>
 </details>
 
+## 📄 Pages
+
+[GH Pages](https://bz-interactive.github.io/Painting-Fever/)
+
 ## 📖 About
 
 Painting Fever is a 2D platformer that combines music‑driven gameplay with creative wall‑painting mechanics. Players sprint through dynamic levels, paint walls to create paths, and stay in sync with the beat.
