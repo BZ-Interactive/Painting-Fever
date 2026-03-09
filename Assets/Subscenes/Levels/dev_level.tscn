@@ -17,6 +17,7 @@ script = ExtResource("1_hvebc")
 LaneOffset = 160.0
 LevelMusic = ExtResource("2_wxd11")
 MusicBPM = 144.0
+MusicOffset = 0.15
 CentralLinePoint = NodePath("Central Line Definer Node2D")
 
 [node name="Paralax CanvasLayer" type="CanvasLayer" parent="."]

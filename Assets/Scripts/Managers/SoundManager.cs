@@ -130,22 +130,28 @@ public partial class SoundManager : Node, IEventSubscriber
 		float currentBeat = (float) Math.Round(songPosition / SPB);
 
 		float nearestBeatTime = currentBeat * SPB;
-		float diff = (float) Math.Abs(songPosition - nearestBeatTime);
+		float diff = Math.Abs(songPosition - nearestBeatTime);
 
+		#if DEBUG
 		if (printValues)
 		{
 			GD.Print("diff: " + diff);
 			GD.Print("Offset: " + LevelManager.Instance.CurrentLevel.MusicOffset);
 			GD.Print("BPM: " + LevelManager.Instance.CurrentLevel.MusicBPM);
 		}
+		#endif
 		if(diff < LevelManager.Instance.CurrentLevel.MusicOffset)
 		{
+			#if DEBUG
 			if (printValues)
 				GD.Print("Hit");
+			#endif
 			return true;
 		}
+		#if DEBUG
 		if (printValues)
 			GD.Print("Miss");
+		#endif
 		
 		return false;
     }
