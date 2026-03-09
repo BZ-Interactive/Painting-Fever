@@ -23,6 +23,7 @@ public partial class PerformanceOverlay : CenterContainer, IEventSubscriber
 			fpsValueLabel.Text = Engine.GetFramesPerSecond().ToString("F2");
 			frameTimeValueLabel.Text = (delta * 1000f).ToString("F2");
 
+			//TODO: Temporary, remove upon GUI integration
 			if (SoundManager.Instance.CheckTiming(false))
 			{
 				beatRect.Color = new Color(0,1,0,1);
