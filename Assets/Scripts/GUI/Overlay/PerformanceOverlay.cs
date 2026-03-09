@@ -5,6 +5,7 @@ public partial class PerformanceOverlay : CenterContainer, IEventSubscriber
 	[Export] private Label gameVersionLabel;
 	[Export] private Label fpsValueLabel;
 	[Export] private Label frameTimeValueLabel;
+	[Export] private ColorRect beatRect;
 
 	public override void _Ready()
 	{
@@ -21,6 +22,15 @@ public partial class PerformanceOverlay : CenterContainer, IEventSubscriber
 			// need max performance for accurate readings, so "...ms or FPS: " are added through scenes.
 			fpsValueLabel.Text = Engine.GetFramesPerSecond().ToString("F2");
 			frameTimeValueLabel.Text = (delta * 1000f).ToString("F2");
+
+			if (SoundManager.Instance.CheckTiming(false))
+			{
+				beatRect.Color = new Color(0,1,0,1);
+			}
+			else
+			{
+				beatRect.Color = new Color(1, 1, 1, 1);
+			}
 		}
 	}
 

@@ -118,4 +118,36 @@ public partial class SoundManager : Node, IEventSubscriber
 				break;
 		}
 	}
+
+
+    public bool CheckTiming(bool printValues)
+    {
+		if(LevelManager.Instance.CurrentLevel==null)
+			return false;
+		
+		float songPosition = (float) AudioServer.GetTimeSinceLastMix() + LevelMusicPlayer.GetPlaybackPosition()  - (float) AudioServer.GetOutputLatency();
+		float SPB = 60.0f / LevelManager.Instance.CurrentLevel.MusicBPM;
+		float currentBeat = (float) Math.Round(songPosition / SPB);
+
+		float nearestBeatTime = currentBeat * SPB;
+		float diff = (float) Math.Abs(songPosition - nearestBeatTime);
+
+		if (printValues)
+		{
+			GD.Print("diff: " + diff);
+			GD.Print("Offset: " + LevelManager.Instance.CurrentLevel.MusicOffset);
+			GD.Print("BPM: " + LevelManager.Instance.CurrentLevel.MusicBPM);
+		}
+		if(diff < LevelManager.Instance.CurrentLevel.MusicOffset)
+		{
+			if (printValues)
+				GD.Print("Hit");
+			return true;
+		}
+		if (printValues)
+			GD.Print("Miss");
+		
+		return false;
+    }
+
 }
