@@ -50,11 +50,11 @@ theme_override_constants/margin_top = 20
 theme_override_constants/margin_right = 20
 theme_override_constants/margin_bottom = 20
 
-[node name="easy-levels" type="VBoxContainer" parent="MarginContainer/PanelContainer/MarginContainer" node_paths=PackedStringArray("UpperlevelRow", "LowerlevelRow")]
+[node name="easy-levels" type="VBoxContainer" parent="MarginContainer/PanelContainer/MarginContainer" node_paths=PackedStringArray("exptUpperlevelRow", "exptLowerlevelRow")]
 layout_mode = 2
 script = ExtResource("4_up3wd")
-UpperlevelRow = NodePath("Upper Level Hbox")
-LowerlevelRow = NodePath("lower Level Hbox")
+exptUpperlevelRow = NodePath("E-Upper Level Hbox")
+exptLowerlevelRow = NodePath("E-lower Level Hbox")
 
 [node name="Easy Levels PanelContainer" type="PanelContainer" parent="MarginContainer/PanelContainer/MarginContainer/easy-levels"]
 layout_mode = 2
@@ -72,22 +72,22 @@ theme_override_constants/margin_bottom = 10
 layout_mode = 2
 text = "easy-levels"
 
-[node name="Upper Level Hbox" type="HBoxContainer" parent="MarginContainer/PanelContainer/MarginContainer/easy-levels"]
+[node name="E-Upper Level Hbox" type="HBoxContainer" parent="MarginContainer/PanelContainer/MarginContainer/easy-levels"]
 layout_mode = 2
 
 [node name="Spacer" type="Control" parent="MarginContainer/PanelContainer/MarginContainer/easy-levels"]
 layout_mode = 2
 
-[node name="lower Level Hbox" type="HBoxContainer" parent="MarginContainer/PanelContainer/MarginContainer/easy-levels"]
+[node name="E-lower Level Hbox" type="HBoxContainer" parent="MarginContainer/PanelContainer/MarginContainer/easy-levels"]
 layout_mode = 2
 
-[node name="med-levels" type="VBoxContainer" parent="MarginContainer/PanelContainer/MarginContainer" node_paths=PackedStringArray("UpperlevelRow", "LowerlevelRow")]
+[node name="med-levels" type="VBoxContainer" parent="MarginContainer/PanelContainer/MarginContainer" node_paths=PackedStringArray("exptUpperlevelRow", "exptLowerlevelRow")]
 visible = false
 layout_mode = 2
 script = ExtResource("4_up3wd")
 Difficulty = 1
-UpperlevelRow = NodePath("Upper Level Hbox")
-LowerlevelRow = NodePath("lower Level Hbox")
+exptUpperlevelRow = NodePath("M-Upper Level Hbox")
+exptLowerlevelRow = NodePath("M-lower Level Hbox")
 
 [node name="Med Levels PanelContainer" type="PanelContainer" parent="MarginContainer/PanelContainer/MarginContainer/med-levels"]
 layout_mode = 2
@@ -105,22 +105,22 @@ theme_override_constants/margin_bottom = 10
 layout_mode = 2
 text = "med-levels"
 
-[node name="Upper Level Hbox" type="HBoxContainer" parent="MarginContainer/PanelContainer/MarginContainer/med-levels"]
+[node name="M-Upper Level Hbox" type="HBoxContainer" parent="MarginContainer/PanelContainer/MarginContainer/med-levels"]
 layout_mode = 2
 
 [node name="Spacer" type="Control" parent="MarginContainer/PanelContainer/MarginContainer/med-levels"]
 layout_mode = 2
 
-[node name="lower Level Hbox" type="HBoxContainer" parent="MarginContainer/PanelContainer/MarginContainer/med-levels"]
+[node name="M-lower Level Hbox" type="HBoxContainer" parent="MarginContainer/PanelContainer/MarginContainer/med-levels"]
 layout_mode = 2
 
-[node name="hard-levels" type="VBoxContainer" parent="MarginContainer/PanelContainer/MarginContainer" node_paths=PackedStringArray("UpperlevelRow", "LowerlevelRow")]
+[node name="hard-levels" type="VBoxContainer" parent="MarginContainer/PanelContainer/MarginContainer" node_paths=PackedStringArray("exptUpperlevelRow", "exptLowerlevelRow")]
 visible = false
 layout_mode = 2
 script = ExtResource("4_up3wd")
 Difficulty = 2
-UpperlevelRow = NodePath("Upper Level Hbox")
-LowerlevelRow = NodePath("lower Level Hbox")
+exptUpperlevelRow = NodePath("H-Upper Level Hbox")
+exptLowerlevelRow = NodePath("H-lower Level Hbox")
 
 [node name="Hard Levels PanelContainer" type="PanelContainer" parent="MarginContainer/PanelContainer/MarginContainer/hard-levels"]
 layout_mode = 2
@@ -138,22 +138,22 @@ theme_override_constants/margin_bottom = 10
 layout_mode = 2
 text = "hard-levels"
 
-[node name="Upper Level Hbox" type="HBoxContainer" parent="MarginContainer/PanelContainer/MarginContainer/hard-levels"]
+[node name="H-Upper Level Hbox" type="HBoxContainer" parent="MarginContainer/PanelContainer/MarginContainer/hard-levels"]
 layout_mode = 2
 
 [node name="Spacer" type="Control" parent="MarginContainer/PanelContainer/MarginContainer/hard-levels"]
 layout_mode = 2
 
-[node name="lower Level Hbox" type="HBoxContainer" parent="MarginContainer/PanelContainer/MarginContainer/hard-levels"]
+[node name="H-lower Level Hbox" type="HBoxContainer" parent="MarginContainer/PanelContainer/MarginContainer/hard-levels"]
 layout_mode = 2
 
-[node name="easter-egg-levels" type="VBoxContainer" parent="MarginContainer/PanelContainer/MarginContainer" node_paths=PackedStringArray("UpperlevelRow", "LowerlevelRow")]
+[node name="easter-egg-levels" type="VBoxContainer" parent="MarginContainer/PanelContainer/MarginContainer" node_paths=PackedStringArray("exptUpperlevelRow", "exptLowerlevelRow")]
 visible = false
 layout_mode = 2
 script = ExtResource("4_up3wd")
 Difficulty = 3
-UpperlevelRow = NodePath("Upper Level Hbox")
-LowerlevelRow = NodePath("lower Level Hbox")
+exptUpperlevelRow = NodePath("easter-Upper Level Hbox")
+exptLowerlevelRow = NodePath("easter-lower Level Hbox")
 
 [node name="Easter Egg Levels PanelContainer" type="PanelContainer" parent="MarginContainer/PanelContainer/MarginContainer/easter-egg-levels"]
 layout_mode = 2
@@ -171,13 +171,13 @@ theme_override_constants/margin_bottom = 10
 layout_mode = 2
 text = "easter-levels"
 
-[node name="Upper Level Hbox" type="HBoxContainer" parent="MarginContainer/PanelContainer/MarginContainer/easter-egg-levels"]
+[node name="easter-Upper Level Hbox" type="HBoxContainer" parent="MarginContainer/PanelContainer/MarginContainer/easter-egg-levels"]
 layout_mode = 2
 
 [node name="Spacer" type="Control" parent="MarginContainer/PanelContainer/MarginContainer/easter-egg-levels"]
 layout_mode = 2
 
-[node name="lower Level Hbox" type="HBoxContainer" parent="MarginContainer/PanelContainer/MarginContainer/easter-egg-levels"]
+[node name="easter-lower Level Hbox" type="HBoxContainer" parent="MarginContainer/PanelContainer/MarginContainer/easter-egg-levels"]
 layout_mode = 2
 
 [node name="Level Switches HBoxContainer" type="HBoxContainer" parent="MarginContainer/PanelContainer/MarginContainer"]
