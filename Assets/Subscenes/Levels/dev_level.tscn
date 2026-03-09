@@ -1,8 +1,9 @@
-[gd_scene load_steps=11 format=3 uid="uid://dn2ifcwpa3u1i"]
+[gd_scene load_steps=12 format=3 uid="uid://dn2ifcwpa3u1i"]
 
 [ext_resource type="PackedScene" uid="uid://yc15qf53iqv1" path="res://Assets/Subscenes/Player/player_cube.tscn" id="1_7t5j6"]
 [ext_resource type="Script" uid="uid://beo7axsch4on6" path="res://Assets/Scripts/Level/Level.cs" id="1_hvebc"]
 [ext_resource type="Texture2D" uid="uid://gh1vts4whrx7" path="res://Assets/Sprites/Backgrounds/purple_disco.jpg" id="2_pep3e"]
+[ext_resource type="AudioStream" uid="uid://qjt2mcj7hbar" path="res://Assets/Music/Fast/Cosmic_Drift_144.mp3" id="2_wxd11"]
 [ext_resource type="PackedScene" uid="uid://dinh61lda4yrj" path="res://Assets/Subscenes/Walls/wall_long.tscn" id="4_l40ax"]
 [ext_resource type="PackedScene" uid="uid://dy7oetulasqpl" path="res://Assets/Subscenes/Walls/wall_short.tscn" id="5_fcitj"]
 [ext_resource type="PackedScene" uid="uid://r4bkj3ehfbay" path="res://Assets/Subscenes/Obstacles/base_sticky.tscn" id="7_gfjbi"]
@@ -14,6 +15,9 @@
 [node name="dev_level" type="Node2D" node_paths=PackedStringArray("CentralLinePoint")]
 script = ExtResource("1_hvebc")
 LaneOffset = 160.0
+LevelMusic = ExtResource("2_wxd11")
+MusicBPM = 144.0
+MusicOffset = 0.15
 CentralLinePoint = NodePath("Central Line Definer Node2D")
 
 [node name="Paralax CanvasLayer" type="CanvasLayer" parent="."]
