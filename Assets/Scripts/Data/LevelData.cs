@@ -1,18 +1,20 @@
 using Godot;
 
+[Tool]
 public partial class LevelData : Resource
 {
     [ExportCategory("Level Settings")]
     [Export] public float LevelSlowDownTimeScale { get; private set; } = 0.25f;
-    
+
     [ExportCategory("Level Scenes")]
-    [Export] public Godot.Collections.Array<PackedScene> EasyLevelScenes {get; private set; }
+    [Export] public Godot.Collections.Array<PackedScene> EasyLevelScenes { get; private set; }
     [Export] public Godot.Collections.Array<PackedScene> MediumLevelScenes { get; private set; }
     [Export] public Godot.Collections.Array<PackedScene> HardLevelScenes { get; private set; }
     [Export] public Godot.Collections.Array<PackedScene> EasterEggLevelScenes { get; private set; }
-    
+
     [ExportCategory("Difficulty Settings")]
-    [Export] public Godot.Collections.Dictionary<Difficulty, float> DifficultyToSpeedMap = new()
+    [Export]
+    public Godot.Collections.Dictionary<Difficulty, float> DifficultyToSpeedMap = new()
     {
         { Difficulty.Easy, 300f },
         { Difficulty.Medium, 600f },
@@ -20,7 +22,8 @@ public partial class LevelData : Resource
         { Difficulty.EasterEgg, 1000f }
     };
 
-    [Export] public Godot.Collections.Dictionary<Difficulty, float> DifficultyToTimeoutMap = new()
+    [Export]
+    public Godot.Collections.Dictionary<Difficulty, float> DifficultyToTimeoutMap = new()
     {
         { Difficulty.Easy, 2.0f },
         { Difficulty.Medium, 1.2f },
@@ -28,9 +31,9 @@ public partial class LevelData : Resource
         { Difficulty.EasterEgg, 0.8f }
     };
 
-    #if DEBUG
+#if DEBUG
     [Export] public Godot.Collections.Array<PackedScene> DevLevels { get; private set; }
-    #endif
+#endif
 
     public float stickySlowdownMultiplier = 0.9f;
 
@@ -46,7 +49,7 @@ public partial class LevelData : Resource
     {
         return DifficultyToSpeedMap[difficulty];
     }
-    
+
     public float GetMaxStuckTime(Difficulty difficulty)
     {
         return DifficultyToTimeoutMap[difficulty];
