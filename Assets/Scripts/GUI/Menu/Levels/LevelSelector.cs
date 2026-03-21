@@ -81,10 +81,10 @@ public partial class LevelSelector : Control
     private void OnPrevPageButtonPressed()
     {
         int targetLevel = (int)selectedDifficulty - 1;
-        
+
         if (targetLevel < 0) targetLevel = Enum.GetNames(typeof(Difficulty)).Length - 1;
         else selectedDifficulty = (Difficulty)(targetLevel % Enum.GetNames(typeof(Difficulty)).Length);
-
+        
         SelectLevelPage(selectedDifficulty);
 
         if (Difficulty.Easy == selectedDifficulty)

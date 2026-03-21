@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://dn2ifcwpa3u1i"]
+[gd_scene load_steps=14 format=3 uid="uid://dn2ifcwpa3u1i"]
 
 [ext_resource type="PackedScene" uid="uid://yc15qf53iqv1" path="res://Assets/Subscenes/Player/player_cube.tscn" id="1_7t5j6"]
 [ext_resource type="Script" uid="uid://beo7axsch4on6" path="res://Assets/Scripts/Level/Level.cs" id="1_hvebc"]
@@ -11,9 +11,12 @@
 [ext_resource type="PackedScene" uid="uid://ca6lehsvubvkw" path="res://Assets/Subscenes/Obstacles/Traps/saw.tscn" id="8_p5wxb"]
 [ext_resource type="PackedScene" uid="uid://b36xrgwmafkfh" path="res://Assets/Subscenes/Obstacles/Traps/single_spike.tscn" id="9_uy6lu"]
 [ext_resource type="PackedScene" uid="uid://dbsfohp0whbwh" path="res://Assets/Subscenes/Obstacles/Traps/quad_spike.tscn" id="10_pep3e"]
+[ext_resource type="Script" uid="uid://cnpbtd3hf53tb" path="res://Assets/Scripts/Level/Tools/JumpPointPlacer.cs" id="12_qh3gx"]
+[ext_resource type="Resource" uid="uid://bb0q6gadam8k3" path="res://Assets/Data/LevelData.tres" id="13_niryy"]
 
 [node name="dev_level" type="Node2D" node_paths=PackedStringArray("CentralLinePoint")]
 script = ExtResource("1_hvebc")
+MaxDistance = 6400.0
 LaneOffset = 160.0
 LevelMusic = ExtResource("2_wxd11")
 MusicBPM = 144.0
@@ -157,3 +160,12 @@ position = Vector2(2954, 159)
 [node name="Quad Spikes StaticBody2D3" parent="." instance=ExtResource("10_pep3e")]
 position = Vector2(4259, -160)
 rotation = 3.1415927
+
+[node name="Tools" type="Node2D" parent="."]
+
+[node name="Jump Point Generator" type="Node2D" parent="Tools" node_paths=PackedStringArray("level", "points")]
+script = ExtResource("12_qh3gx")
+level = NodePath("../..")
+data = ExtResource("13_niryy")
+JumpPointCount = 38
+points = [NodePath("@Marker2D@65011"), NodePath("@Marker2D@65012"), NodePath("@Marker2D@65013"), NodePath("@Marker2D@65014"), NodePath("@Marker2D@65015"), NodePath("@Marker2D@65016"), NodePath("@Marker2D@65017"), NodePath("@Marker2D@65018"), NodePath("@Marker2D@65019"), NodePath("@Marker2D@65020"), NodePath("@Marker2D@65021"), NodePath("@Marker2D@65022"), NodePath("@Marker2D@65023"), NodePath("@Marker2D@65024"), NodePath("@Marker2D@65025"), NodePath("@Marker2D@65026"), NodePath("@Marker2D@65027"), NodePath("@Marker2D@65028"), NodePath("@Marker2D@65029"), NodePath("@Marker2D@65030"), NodePath("@Marker2D@65031"), NodePath("@Marker2D@65032"), NodePath("@Marker2D@65033"), NodePath("@Marker2D@65034"), NodePath("@Marker2D@65035"), NodePath("@Marker2D@65036"), NodePath("@Marker2D@65037"), NodePath("@Marker2D@65038"), NodePath("@Marker2D@65039"), NodePath("@Marker2D@65040"), NodePath("@Marker2D@65041"), NodePath("@Marker2D@65042"), NodePath("@Marker2D@65043"), NodePath("@Marker2D@65044"), NodePath("@Marker2D@65045"), NodePath("@Marker2D@65046"), NodePath("@Marker2D@65047"), NodePath("@Marker2D@65048")]
