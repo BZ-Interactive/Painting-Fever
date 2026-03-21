@@ -4,7 +4,8 @@ using Godot;
 public partial class JumpPointPlacer : Node2D
 {
     [Export] private Level level;
-    [Export] private LevelData data;
+    private LevelData data; // must use lazy loading or this will throw a initialization error
+    [Export] private float gizmoSize = 200f;
     [Export] Godot.Collections.Array<Marker2D> points = [];
 
     [Export]
@@ -15,8 +16,14 @@ public partial class JumpPointPlacer : Node2D
         {
             if (value)
             {
-                if (points.Count > 0)
-                    ClearPoints();
+                data ??= GD.Load<LevelData>("res://Assets/Data/LevelData.tres");
+                if (data == null)
+                {
+                    GD.PrintErr("Failed to load LevelData.tres");
+                    return;
+                }
+
+                ClearPoints();
                 GenerateJumpPoints();
             }
         }
@@ -31,8 +38,7 @@ public partial class JumpPointPlacer : Node2D
         {
             if (value)
             {
-                if (points.Count > 0)
-                    ClearPoints();
+                ClearPoints();
             }
         }
     }
@@ -49,17 +55,21 @@ public partial class JumpPointPlacer : Node2D
 
     private void PlaceJumpPoint(Vector2 position)
     {
-        Marker2D point = new() { GizmoExtents = 200f, Position = position };
-        points.Add(point);
+        Marker2D point = new() { GizmoExtents = gizmoSize, Position = position };
         this.AddChild(point);
+        point.Owner = GetTree().EditedSceneRoot;
+        points.Add(point);
     }
 
     private void ClearPoints()
     {
+        points ??= []; // if null recrate
+        if (points.Count == 0) return; // if zero, its empty anyway
+
         foreach (Marker2D point in points)
         {
             this.RemoveChild(point);
-            point.QueueFree();
+            point.Free(); // Free is better for editor tools
         }
         points.Clear();
     }

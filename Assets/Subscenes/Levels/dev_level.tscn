@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3 uid="uid://dn2ifcwpa3u1i"]
+[gd_scene load_steps=13 format=3 uid="uid://dn2ifcwpa3u1i"]
 
 [ext_resource type="PackedScene" uid="uid://yc15qf53iqv1" path="res://Assets/Subscenes/Player/player_cube.tscn" id="1_7t5j6"]
 [ext_resource type="Script" uid="uid://beo7axsch4on6" path="res://Assets/Scripts/Level/Level.cs" id="1_hvebc"]
@@ -12,7 +12,6 @@
 [ext_resource type="PackedScene" uid="uid://b36xrgwmafkfh" path="res://Assets/Subscenes/Obstacles/Traps/single_spike.tscn" id="9_uy6lu"]
 [ext_resource type="PackedScene" uid="uid://dbsfohp0whbwh" path="res://Assets/Subscenes/Obstacles/Traps/quad_spike.tscn" id="10_pep3e"]
 [ext_resource type="Script" uid="uid://cnpbtd3hf53tb" path="res://Assets/Scripts/Level/Tools/JumpPointPlacer.cs" id="12_qh3gx"]
-[ext_resource type="Resource" uid="uid://bb0q6gadam8k3" path="res://Assets/Data/LevelData.tres" id="13_niryy"]
 
 [node name="dev_level" type="Node2D" node_paths=PackedStringArray("CentralLinePoint")]
 script = ExtResource("1_hvebc")
@@ -166,6 +165,156 @@ rotation = 3.1415927
 [node name="Jump Point Generator" type="Node2D" parent="Tools" node_paths=PackedStringArray("level", "points")]
 script = ExtResource("12_qh3gx")
 level = NodePath("../..")
-data = ExtResource("13_niryy")
-JumpPointCount = 38
-points = [NodePath("@Marker2D@65011"), NodePath("@Marker2D@65012"), NodePath("@Marker2D@65013"), NodePath("@Marker2D@65014"), NodePath("@Marker2D@65015"), NodePath("@Marker2D@65016"), NodePath("@Marker2D@65017"), NodePath("@Marker2D@65018"), NodePath("@Marker2D@65019"), NodePath("@Marker2D@65020"), NodePath("@Marker2D@65021"), NodePath("@Marker2D@65022"), NodePath("@Marker2D@65023"), NodePath("@Marker2D@65024"), NodePath("@Marker2D@65025"), NodePath("@Marker2D@65026"), NodePath("@Marker2D@65027"), NodePath("@Marker2D@65028"), NodePath("@Marker2D@65029"), NodePath("@Marker2D@65030"), NodePath("@Marker2D@65031"), NodePath("@Marker2D@65032"), NodePath("@Marker2D@65033"), NodePath("@Marker2D@65034"), NodePath("@Marker2D@65035"), NodePath("@Marker2D@65036"), NodePath("@Marker2D@65037"), NodePath("@Marker2D@65038"), NodePath("@Marker2D@65039"), NodePath("@Marker2D@65040"), NodePath("@Marker2D@65041"), NodePath("@Marker2D@65042"), NodePath("@Marker2D@65043"), NodePath("@Marker2D@65044"), NodePath("@Marker2D@65045"), NodePath("@Marker2D@65046"), NodePath("@Marker2D@65047"), NodePath("@Marker2D@65048")]
+points = [NodePath("@Marker2D@21852"), NodePath("@Marker2D@21853"), NodePath("@Marker2D@21854"), NodePath("@Marker2D@21855"), NodePath("@Marker2D@21856"), NodePath("@Marker2D@21857"), NodePath("@Marker2D@21858"), NodePath("@Marker2D@21859"), NodePath("@Marker2D@21860"), NodePath("@Marker2D@21861"), NodePath("@Marker2D@21862"), NodePath("@Marker2D@21863"), NodePath("@Marker2D@21864"), NodePath("@Marker2D@21865"), NodePath("@Marker2D@21866"), NodePath("@Marker2D@21867"), NodePath("@Marker2D@21868"), NodePath("@Marker2D@21869"), NodePath("@Marker2D@21870"), NodePath("@Marker2D@21871"), NodePath("@Marker2D@21872"), NodePath("@Marker2D@21873"), NodePath("@Marker2D@21874"), NodePath("@Marker2D@21875"), NodePath("@Marker2D@21876"), NodePath("@Marker2D@21877"), NodePath("@Marker2D@21878"), NodePath("@Marker2D@21879"), NodePath("@Marker2D@21880"), NodePath("@Marker2D@21881"), NodePath("@Marker2D@21882"), NodePath("@Marker2D@21883"), NodePath("@Marker2D@21884"), NodePath("@Marker2D@21885"), NodePath("@Marker2D@21886"), NodePath("@Marker2D@21887"), NodePath("@Marker2D@21888"), NodePath("@Marker2D@21889")]
+
+[node name="@Marker2D@21852" type="Marker2D" parent="Tools/Jump Point Generator"]
+position = Vector2(166.66666, 0)
+gizmo_extents = 200.0
+
+[node name="@Marker2D@21853" type="Marker2D" parent="Tools/Jump Point Generator"]
+position = Vector2(333.3333, 0)
+gizmo_extents = 200.0
+
+[node name="@Marker2D@21854" type="Marker2D" parent="Tools/Jump Point Generator"]
+position = Vector2(499.99997, 0)
+gizmo_extents = 200.0
+
+[node name="@Marker2D@21855" type="Marker2D" parent="Tools/Jump Point Generator"]
+position = Vector2(666.6666, 0)
+gizmo_extents = 200.0
+
+[node name="@Marker2D@21856" type="Marker2D" parent="Tools/Jump Point Generator"]
+position = Vector2(833.33325, 0)
+gizmo_extents = 200.0
+
+[node name="@Marker2D@21857" type="Marker2D" parent="Tools/Jump Point Generator"]
+position = Vector2(999.99994, 0)
+gizmo_extents = 200.0
+
+[node name="@Marker2D@21858" type="Marker2D" parent="Tools/Jump Point Generator"]
+position = Vector2(1166.6666, 0)
+gizmo_extents = 200.0
+
+[node name="@Marker2D@21859" type="Marker2D" parent="Tools/Jump Point Generator"]
+position = Vector2(1333.3333, 0)
+gizmo_extents = 200.0
+
+[node name="@Marker2D@21860" type="Marker2D" parent="Tools/Jump Point Generator"]
+position = Vector2(1499.9999, 0)
+gizmo_extents = 200.0
+
+[node name="@Marker2D@21861" type="Marker2D" parent="Tools/Jump Point Generator"]
+position = Vector2(1666.6665, 0)
+gizmo_extents = 200.0
+
+[node name="@Marker2D@21862" type="Marker2D" parent="Tools/Jump Point Generator"]
+position = Vector2(1833.3333, 0)
+gizmo_extents = 200.0
+
+[node name="@Marker2D@21863" type="Marker2D" parent="Tools/Jump Point Generator"]
+position = Vector2(1999.9999, 0)
+gizmo_extents = 200.0
+
+[node name="@Marker2D@21864" type="Marker2D" parent="Tools/Jump Point Generator"]
+position = Vector2(2166.6665, 0)
+gizmo_extents = 200.0
+
+[node name="@Marker2D@21865" type="Marker2D" parent="Tools/Jump Point Generator"]
+position = Vector2(2333.3333, 0)
+gizmo_extents = 200.0
+
+[node name="@Marker2D@21866" type="Marker2D" parent="Tools/Jump Point Generator"]
+position = Vector2(2499.9998, 0)
+gizmo_extents = 200.0
+
+[node name="@Marker2D@21867" type="Marker2D" parent="Tools/Jump Point Generator"]
+position = Vector2(2666.6665, 0)
+gizmo_extents = 200.0
+
+[node name="@Marker2D@21868" type="Marker2D" parent="Tools/Jump Point Generator"]
+position = Vector2(2833.3333, 0)
+gizmo_extents = 200.0
+
+[node name="@Marker2D@21869" type="Marker2D" parent="Tools/Jump Point Generator"]
+position = Vector2(2999.9998, 0)
+gizmo_extents = 200.0
+
+[node name="@Marker2D@21870" type="Marker2D" parent="Tools/Jump Point Generator"]
+position = Vector2(3166.6665, 0)
+gizmo_extents = 200.0
+
+[node name="@Marker2D@21871" type="Marker2D" parent="Tools/Jump Point Generator"]
+position = Vector2(3333.333, 0)
+gizmo_extents = 200.0
+
+[node name="@Marker2D@21872" type="Marker2D" parent="Tools/Jump Point Generator"]
+position = Vector2(3499.9998, 0)
+gizmo_extents = 200.0
+
+[node name="@Marker2D@21873" type="Marker2D" parent="Tools/Jump Point Generator"]
+position = Vector2(3666.6665, 0)
+gizmo_extents = 200.0
+
+[node name="@Marker2D@21874" type="Marker2D" parent="Tools/Jump Point Generator"]
+position = Vector2(3833.333, 0)
+gizmo_extents = 200.0
+
+[node name="@Marker2D@21875" type="Marker2D" parent="Tools/Jump Point Generator"]
+position = Vector2(3999.9998, 0)
+gizmo_extents = 200.0
+
+[node name="@Marker2D@21876" type="Marker2D" parent="Tools/Jump Point Generator"]
+position = Vector2(4166.6665, 0)
+gizmo_extents = 200.0
+
+[node name="@Marker2D@21877" type="Marker2D" parent="Tools/Jump Point Generator"]
+position = Vector2(4333.333, 0)
+gizmo_extents = 200.0
+
+[node name="@Marker2D@21878" type="Marker2D" parent="Tools/Jump Point Generator"]
+position = Vector2(4499.9995, 0)
+gizmo_extents = 200.0
+
+[node name="@Marker2D@21879" type="Marker2D" parent="Tools/Jump Point Generator"]
+position = Vector2(4666.6665, 0)
+gizmo_extents = 200.0
+
+[node name="@Marker2D@21880" type="Marker2D" parent="Tools/Jump Point Generator"]
+position = Vector2(4833.333, 0)
+gizmo_extents = 200.0
+
+[node name="@Marker2D@21881" type="Marker2D" parent="Tools/Jump Point Generator"]
+position = Vector2(4999.9995, 0)
+gizmo_extents = 200.0
+
+[node name="@Marker2D@21882" type="Marker2D" parent="Tools/Jump Point Generator"]
+position = Vector2(5166.6665, 0)
+gizmo_extents = 200.0
+
+[node name="@Marker2D@21883" type="Marker2D" parent="Tools/Jump Point Generator"]
+position = Vector2(5333.333, 0)
+gizmo_extents = 200.0
+
+[node name="@Marker2D@21884" type="Marker2D" parent="Tools/Jump Point Generator"]
+position = Vector2(5499.9995, 0)
+gizmo_extents = 200.0
+
+[node name="@Marker2D@21885" type="Marker2D" parent="Tools/Jump Point Generator"]
+position = Vector2(5666.6665, 0)
+gizmo_extents = 200.0
+
+[node name="@Marker2D@21886" type="Marker2D" parent="Tools/Jump Point Generator"]
+position = Vector2(5833.333, 0)
+gizmo_extents = 200.0
+
+[node name="@Marker2D@21887" type="Marker2D" parent="Tools/Jump Point Generator"]
+position = Vector2(5999.9995, 0)
+gizmo_extents = 200.0
+
+[node name="@Marker2D@21888" type="Marker2D" parent="Tools/Jump Point Generator"]
+position = Vector2(6166.6665, 0)
+gizmo_extents = 200.0
+
+[node name="@Marker2D@21889" type="Marker2D" parent="Tools/Jump Point Generator"]
+position = Vector2(6333.333, 0)
+gizmo_extents = 200.0
