@@ -1,20 +1,23 @@
-[gd_scene load_steps=3 format=3 uid="uid://cu7y8wbbao55a"]
+[gd_scene load_steps=4 format=3 uid="uid://cu7y8wbbao55a"]
 
-[ext_resource type="Theme" uid="uid://vqgb03qbuhg6" path="res://Assets/Themes/Menu-UITheme.tres" id="1_dfjbs"]
-[ext_resource type="StyleBox" uid="uid://dy0jbaujbuvwt" path="res://Assets/Styles/Menu_Style_Box.tres" id="2_1sjlb"]
+[ext_resource type="Script" uid="uid://ktdxdgmqc2q2" path="res://Assets/Scripts/GUI/Menu/FailMenu.cs" id="1_8kpoq"]
+[ext_resource type="Theme" uid="uid://vqgb03qbuhg6" path="res://Assets/Themes/Menu-UITheme.tres" id="2_aulc0"]
+[ext_resource type="StyleBox" uid="uid://dy0jbaujbuvwt" path="res://Assets/Styles/Menu_Style_Box.tres" id="3_k10ox"]
 
-[node name="Level Fail Panel" type="CenterContainer"]
+[node name="Level Fail Menu" type="CenterContainer" node_paths=PackedStringArray("failReasonLabel")]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+script = ExtResource("1_8kpoq")
+failReasonLabel = NodePath("Panel/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/Fail Reason Label")
 
 [node name="Panel" type="PanelContainer" parent="."]
 self_modulate = Color(1, 0, 0.36078432, 1)
 layout_mode = 2
-theme = ExtResource("1_dfjbs")
-theme_override_styles/panel = ExtResource("2_1sjlb")
+theme = ExtResource("2_aulc0")
+theme_override_styles/panel = ExtResource("3_k10ox")
 
 [node name="MarginContainer" type="MarginContainer" parent="Panel"]
 layout_mode = 2
@@ -26,7 +29,7 @@ theme_override_constants/margin_bottom = 30
 [node name="PanelContainer" type="PanelContainer" parent="Panel/MarginContainer"]
 self_modulate = Color(1, 0, 1, 1)
 layout_mode = 2
-theme_override_styles/panel = ExtResource("2_1sjlb")
+theme_override_styles/panel = ExtResource("3_k10ox")
 
 [node name="MarginContainer" type="MarginContainer" parent="Panel/MarginContainer/PanelContainer"]
 layout_mode = 2
@@ -38,7 +41,7 @@ theme_override_constants/margin_bottom = 15
 [node name="VBoxContainer" type="VBoxContainer" parent="Panel/MarginContainer/PanelContainer/MarginContainer"]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="Panel/MarginContainer/PanelContainer/MarginContainer/VBoxContainer"]
+[node name="Fail Reason Label" type="Label" parent="Panel/MarginContainer/PanelContainer/MarginContainer/VBoxContainer"]
 custom_minimum_size = Vector2(250, 55)
 layout_mode = 2
 theme_override_font_sizes/font_size = 32
@@ -68,3 +71,6 @@ layout_mode = 2
 self_modulate = Color(1, 0.84705883, 0.4, 1)
 layout_mode = 2
 text = "Return to Menu"
+
+[connection signal="pressed" from="Panel/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/Buttons Vbox/Retry Button" to="." method="OnRetryButton"]
+[connection signal="pressed" from="Panel/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/Buttons Vbox/Return Button" to="." method="OnReturnButton"]

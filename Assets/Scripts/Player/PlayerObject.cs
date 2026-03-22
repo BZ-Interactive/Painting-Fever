@@ -32,7 +32,7 @@ public partial class PlayerObject : CharacterBody2D
     [Export] public GpuParticles2D PopEffect { get; private set; }
 
     public event Action GotUnstuck;
-    public bool dead = false;
+    public bool failed = false;
 
     public override void _Ready()
     {
@@ -51,7 +51,7 @@ public partial class PlayerObject : CharacterBody2D
 
         if (StuckTime > MaxStuckTime)
         {
-            LevelFailed();
+            LevelFailed("Keep up!");
             return;
         }
 
@@ -151,8 +151,7 @@ public partial class PlayerObject : CharacterBody2D
 
         if (collider.GetCollisionLayerValue(3)) // 3rd layer is trap layer
         {
-            Pop();
-            //LevelFailed();
+            Pop(); // this calls level failed after popping.
         }
     }
 
@@ -170,33 +169,36 @@ public partial class PlayerObject : CharacterBody2D
         Position = newPosition;
     }
 
-    private static void OnScreenExited()
+    private void OnScreenExited()
     {
-        LevelFailed();
+        failed = true;
+        LevelFailed("Out of bounds!");
     }
 
-    private static void LevelFailed()
+    /// <summary>
+    /// Called when the level fails.
+    /// </summary>
+    private static void LevelFailed(string reason)
     {
-#if DEBUG
-        GD.Print("Level Failed");
-#endif
-        GameManager.Instance.ReturnToMainMenu();
+        GUI.Instance.HUD.ShowFailMenu(reason);
     }
 
     private void Pop()
     {
+        if (failed) return;
+
         MoveSpeed = 0f;
-        dead = true;
-        
+        failed = true;
+
         PopEffect.Modulate = Shape.Modulate;
         PopEffect.Emitting = true;
-        
+
         SoundManager.Instance.PlaySfx(PopSound);
         Tween tween = GetTree().CreateTween();
         tween.TweenProperty(this, "scale", Vector2.Zero, POP_TIME)
                 .SetTrans(Tween.TransitionType.Elastic)
                 .SetEase(Tween.EaseType.Out);
 
-        tween.TweenCallback(Callable.From(LevelFailed));
+        tween.TweenCallback(Callable.From(() => LevelFailed("Couldnt dodge!")));
     }
 }
