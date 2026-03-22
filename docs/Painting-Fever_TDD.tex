@@ -46,11 +46,15 @@
 	\hline
 	\textbf{Date} & \textbf{Version} & \textbf{Author} & \textbf{Change Description}                                                                                                             \\
 	\hline
-	28.02.2026    & 0.1              & BZ-Interactive  & Initial creation of TDD document.                                                                                                       \\
+	28.02.2026    & 0.1              & Barkın Zorlu  & Initial creation of TDD document.                                                                                                       \\
 	\hline
-	01.03.2026    & 0.2              & BZ-Interactive  & Expanded system architecture, added detailed class diagrams, documented audio integration, and outlined future painting logic.          \\
+	01.03.2026    & 0.2              & Barkın Zorlu  & Expanded system architecture, added detailed class diagrams, documented audio integration, and outlined future painting logic.          \\
 	\hline
-	01.03.2026    & 0.3              & BZ-Interactive  & Comprehensive expansion: added input/controls, GUI system, obstacle types, event system, settings, and level progression documentation. \\
+	01.03.2026    & 0.3              & Barkın Zorlu  & Comprehensive expansion: added input/controls, GUI system, obstacle types, event system, settings, and level progression documentation. \\
+	\hline
+	23.03.2026    & 0.4              & Barkın Zorlu  & Added Win Menu and Fail Menu documentation, Pop Effect system, BPM-based beat synchronization for lane switching, and related particle effects. \\
+	\hline
+	23.03.2026    & 0.5              & Barkın Zorlu  & Updated Folder and File Structure. \\
 	\hline
 \end{longtable}
 \newpage
@@ -65,7 +69,7 @@ Painting Fever is a 2D endless-runner style game developed in Godot 4.5 using C\
 
 \section{Technical Stack}
 \begin{itemize}[noitemsep]
-	\item \textbf{Engine}: Godot 4.5 (C\# / .NET)
+	\item \textbf{Engine}: Godot 4.5.1 (C\# / .NET)
 	\item \textbf{Rendering}: Forward Plus (2D)
 	\item \textbf{Resolution}: 1280x720 (borderless, stretch mode: canvas\_items)
 	\item \textbf{Architecture}: Singleton-based service locator pattern with event-driven communication
@@ -236,7 +240,9 @@ public enum GameState
 \section{PlayerObject (\texttt{PlayerObject.cs})}
 \begin{enumerate}[label=\alph*)]
 	\item\textbf{Movement}: constant forward speed (X-axis), lane switching via gravity flip (Y-axis).
+	\item\textbf{BPM-based lane switching}: lane transitions only succeed when synced with music BPM via \texttt{SoundManager.CheckTiming()}.
 	\item\textbf{Collision handling}: triggers level failure on trap layers (collision layer 3).
+	\item\textbf{Death effects}: pop particle effect and sound playback on collision via \texttt{PopEffect} and \texttt{PopSound}.
 	\item\textbf{Color selection}: interacts with GUI through input actions (1, 2, 3 keys).
 	\item\textbf{Painting flag}: \texttt{AbleToPaint} indicates when player is in paint mode (placeholder for future).
 	\item\textbf{Stuck detection}: monitors velocity to detect if player has stopped moving forward.
@@ -254,6 +260,8 @@ public enum GameState
 	\hline
 	GRAVITY           & 9.81f          & Vertical movement multiplier \\
 	\hline
+	POP\_TIME          & 0.5f           & Pop effect duration in seconds \\
+	\hline
 \end{longtable}
 
 \section{SoundManager (\texttt{SoundManager.cs})}
@@ -263,6 +271,7 @@ public enum GameState
 	\item\textbf{Playback control}: dedicated methods for music, SFX, track switching.
 	\item\textbf{Settings integration}: pulls user preferences from \texttt{SettingsManager} and applies via events.
 	\item\textbf{State-based music}: automatically switches to menu music on state transition to \texttt{GameState.Menu}.
+	\item\textbf{Beat timing}: \texttt{CheckTiming(bool printValues)} provides BPM-synchronized input validation for rhythm-based mechanics, with latency compensation via \texttt{AudioServer}.
 \end{enumerate}
 
 \subsection{Audio Players}
@@ -313,9 +322,11 @@ The GUI system uses a \texttt{CanvasLayer} to remain above all game content. The
 \section{HUD (\texttt{HUD.cs})}
 \begin{itemize}[noitemsep]
 	\item In-game heads-up display
-	\item Shows current score/progress
-	\item Contains reference to \texttt{PauseMenu}
+	\item Shows current score/progress via \texttt{UpdateProgressBar(float progress)}
+	\item Contains references to \texttt{PauseMenu}, \texttt{WinMenu}, and \texttt{FailMenu}
+	\item Manages menu visibility and transitions
 	\item Toggled visibility based on \texttt{GameState}
+	\item Provides \texttt{ShowFailMenu(failReason)} and \texttt{ShowWinMenu(score)} interfaces
 \end{itemize}
 
 \section{PauseMenu (\texttt{PauseMenu.cs})}
@@ -324,6 +335,24 @@ The GUI system uses a \texttt{CanvasLayer} to remain above all game content. The
 	\item Pauses game time scale
 	\item Provides resume, restart, and quit options
 	\item \texttt{Visible} property checked by \texttt{PlayerObject} to block movement input
+\end{itemize}
+
+\section{WinMenu (\texttt{WinMenu.cs})}
+\begin{itemize}[noitemsep]
+	\item Displayed when level completion conditions are met
+	\item Shows star rating based on performance score (0-3 stars)
+	\item Displays numerical score as percentage
+	\item Provides \texttt{NextLevel()} to progress and \texttt{ReturnToMenu()} options
+	\item Managed by \texttt{HUD} through \texttt{ShowWinMenu(score)} and \texttt{HideWinMenu()} methods
+\end{itemize}
+
+\section{FailMenu (\texttt{FailMenu.cs})}
+\begin{itemize}[noitemsep]
+	\item Displayed when level failure conditions are triggered
+	\item Shows failure reason (e.g., "Out of Bounds!", "Keep up!", etc.)
+	\item Provides \texttt{RetryLevel()} to restart current level and \texttt{ReturnToMenu()} options
+	\item Manages failure state via \texttt{FailReason} property
+	\item Managed by \texttt{HUD} through \texttt{ShowFailMenu(failReason)} and \texttt{HideFailMenu()} methods
 \end{itemize}
 
 \section{LevelSelector (\texttt{LevelSelector.cs})}
@@ -383,7 +412,7 @@ Central configuration resource for all level-related data:
 
 \section{ColorData (\texttt{ColorData.cs})}
 Stores paint color configurations for the painting mechanic (future implementation).
-
+\pagebreak
 \section{Difficulty Enum}
 \begin{verbatim}
 public enum Difficulty
@@ -533,14 +562,50 @@ The game uses a two-lane system:
 	\item Player Y-position offset by \texttt{OBJECT\_RADIUS} to prevent clipping
 \end{itemize}
 
-\chapter{Future Extensions}
-\section{BPM Synchronization}
+\chapter{Particle Effects}
+\section{Pop Effect (\texttt{pop\_effect.tscn})}
+Death/collision particle system triggered when player hits obstacles:
+
 \begin{itemize}[noitemsep]
-	\item The current \texttt{Level} stores \texttt{MusicBPM}, but no runtime logic ties paint updates to beat intervals.
-	\item Proposed design: a BPM timer node---\texttt{BpmClock.cs}---subscribes to level start; emits \texttt{Beat} events derived from \texttt{MusicBPM}. Components such as \texttt{Renderer} would listen to these events and sync brush strokes.
-	\item Interaction with \texttt{AudioServer}: use \texttt{AudioServer.get\_stream\_playback\_position()} to fetch exact sample position for sub-beat precision.
+	\item \textbf{Type}: \texttt{GPUParticles2D} with \texttt{ParticleProcessMaterial}
+	\item \textbf{Emitter settings}: 50 particles per emission, 0.4 second lifetime
+	\item \textbf{Spread}: 180 degrees for omnidirectional burst
+	\item \textbf{Velocity}: 200--500 px/s random initial velocity
+	\item \textbf{Physics}: Zero gravity for consistent arc-based motion
+	\item \textbf{Visual}: Scale range 1.0--3.0, trail rendering enabled for motion blur
+	\item \textbf{Integration}: Attached to \texttt{PlayerObject}, triggered on collision via \texttt{PlayerObject.PopEffect.Emitting = true}
+	\item \textbf{Audio coupling}: Plays \texttt{PopSound} simultaneously via \texttt{SoundManager.PlaySfx()}
 \end{itemize}
 
+\chapter{Audio Systems}
+\section{BPM Synchronization (\texttt{SoundManager.CheckTiming()})}
+Beat-accurate input timing for rhythm-based mechanics:
+
+\begin{itemize}[noitemsep]
+	\item \textbf{Implementation}: \texttt{SoundManager.CheckTiming(bool printValues)} compares current playback position against nearest beat
+	\item \textbf{Calculation}: Seconds Per Beat (SPB) derived from \texttt{Level.MusicBPM}:
+	\begin{verbatim}
+	SPB = 60.0f / MusicBPM
+	\end{verbatim}
+	\item \textbf{Precision}: Uses \texttt{AudioServer.GetPlaybackPosition()} for sample-accurate timing
+	\item \textbf{Tolerance}: \texttt{Level.MusicOffset} defines acceptable window (in seconds) for beat detection
+	\item \textbf{Usage}: Lane switching only succeeds when \texttt{CheckTiming()} returns \texttt{true}, forcing rhythm-based gameplay
+	\item \textbf{Debug support}: Optional console output via \texttt{printValues} parameter for tuning offset values
+	\item \textbf{Visual feedback}: Performance overlay shows green rect when on-beat, white otherwise
+\end{itemize}
+
+\subsection{BPM Configuration per Level}
+\begin{longtable}{|l|l|}
+	\hline
+	\textbf{Property} & \textbf{Description} \\
+	\hline
+	MusicBPM & Beats per minute of level audio \textit{(required, > 0)} \\
+	\hline
+	MusicOffset & Acceptable timing window in seconds (default: 0.1s) \\
+	\hline
+\end{longtable}
+
+\chapter{Future Extensions}
 \section{Painting Mesh Generation}
 \begin{itemize}[noitemsep]
 	\item Current code reserves a \texttt{PlayerObject.AbleToPaint} flag but no mesh creation.
@@ -620,33 +685,75 @@ Potential future additions:
 Assets/
 +-- Scripts/
 |   +-- Managers/        (GameManager, LevelManager, SoundManager)
-|   +-- Player/          (PlayerObject)
-|   +-- Level/           (Level, Obstacles)
-|   +-- GUI/             (Menus, HUD)
+|   +-- Player/          (PlayerObject, physics)
+|   +-- Level/           (Level, Obstacles, StickyArea, Trap)
+|   +-- GUI/
+|   |   +-- Menu/        (MainMenu, PauseMenu, WinMenu, FailMenu)
+|   |   |   +-- Levels/  (LevelSelector, LevelButton)
+|   |   +-- HUD/         (HUD, progress tracking)
+|   |   +-- Intro/       (Intro sequence)
+|   |   +-- Overlay/     (PerformanceOverlay)
+|   |   +-- Buttons/     (Button components)
+|   |   +-- GUI.cs       (Root GUI controller)
 |   +-- Data/            (LevelData, ColorData)
 |   +-- Enums/           (GameState, Difficulty, PlayerColors)
+|   +-- Camera/          (Camera systems)
+|   +-- Interfaces/      (IEventSubscriber, etc.)
+|   +-- Settings/        (Settings-related scripts)
++-- Scenes/              (Main scene layouts)
+|   +-- GUI/             (GUI scene prefabs)
+|   +-- Game/            (Gameplay scenes)
+|   +-- Intro/           (Intro scenes)
+|   +-- main_scene.tscn  (Root scene)
++-- Subscenes/           (Reusable scene components)
+|   +-- GUI/
+|   +-- Player/
+|   +-- Levels/
+|   +-- Managers/
+|   +-- Obstacles/
 |   +-- Camera/
-+-- Scenes/
-+-- Sprites/
-+-- Audio/
+|   +-- Sections/
+|   +-- Walls/
++-- Sprites/             (2D graphics)
++-- Music/               (Background and level music)
++-- Sounds/              (Sound effects)
++-- Particle_Effects/    (Particle systems, pop_effect.tscn)
++-- Fonts/               (Custom fonts)
++-- Themes/              (UI themes)
++-- Styles/              (UI style boxes)
++-- Data/                (Asset resources: ColorData.tres, LevelData.tres)
 \end{verbatim}
 
 \section{Key Code Locations}
 \begin{longtable}{|l|l|}
 	\hline
-	\textbf{Feature}      & \textbf{File}           \\
+	\textbf{Feature}              & \textbf{File Path}                    \\
 	\hline
-	Game State Management & GameManager.cs:47-73    \\
+	Game State Management         & Scripts/Managers/GameManager.cs       \\
 	\hline
-	Level Instantiation   & LevelManager.cs:40-75   \\
+	Level Instantiation           & Scripts/Managers/LevelManager.cs      \\
 	\hline
-	Player Movement       & PlayerObject.cs:125-131 \\
+	Level Configuration           & Scripts/Level/Level.cs                \\
 	\hline
-	Collision Detection   & PlayerObject.cs:133-142 \\
+	Player Movement \& Input      & Scripts/Player/PlayerObject.cs        \\
 	\hline
-	Music Playback        & SoundManager.cs:67-74   \\
+	BPM Synchronization           & Scripts/Managers/SoundManager.cs      \\
 	\hline
-	Sticky Effect         & StickyArea.cs:59-77     \\
+	Collision Detection           & Scripts/Level/Obstacle/Trap.cs        \\
+	\hline
+	Slow-down Effects             & Scripts/Level/Obstacle/StickyArea.cs  \\
+	\hline
+	Pop Particle Effects          & Particle\_Effects/pop\_effect.tscn    \\
+	\hline
+	Win Menu                      & Scripts/GUI/Menu/WinMenu.cs           \\
+	\hline
+	Fail Menu                     & Scripts/GUI/Menu/FailMenu.cs          \\
+	\hline
+	Pause Menu                    & Scripts/GUI/Menu/PauseMenu.cs         \\
+	\hline
+	Main HUD                      & Scripts/GUI/HUD/HUD.cs                \\
+	\hline
+	Level Selector                & Scripts/GUI/Menu/Levels/LevelSelector.cs \\
 	\hline
 \end{longtable}
 
