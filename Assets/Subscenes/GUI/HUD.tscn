@@ -1,12 +1,13 @@
-[gd_scene load_steps=6 format=3 uid="uid://dbh70xnomdx5c"]
+[gd_scene load_steps=7 format=3 uid="uid://dbh70xnomdx5c"]
 
 [ext_resource type="Script" uid="uid://gjgame5ymalg" path="res://Assets/Scripts/GUI/HUD/HUD.cs" id="1_dny7b"]
 [ext_resource type="PackedScene" uid="uid://bnyjiy5ahlolr" path="res://Assets/Subscenes/GUI/pause_menu.tscn" id="1_pbvnn"]
 [ext_resource type="Texture2D" uid="uid://dpxhf4glpnaac" path="res://Assets/Sprites/square.svg" id="3_3afnw"]
 [ext_resource type="PackedScene" uid="uid://cu7y8wbbao55a" path="res://Assets/Subscenes/GUI/level_fail_menu.tscn" id="3_6wsvs"]
+[ext_resource type="PackedScene" uid="uid://clncw2rbyltpd" path="res://Assets/Subscenes/GUI/level_win_menu.tscn" id="4_q0guf"]
 [ext_resource type="Texture2D" uid="uid://bbky04phhrli7" path="res://Assets/Sprites/UI/gear.svg" id="4_xrlhs"]
 
-[node name="HUD" type="Control" node_paths=PackedStringArray("levelProgressBar", "colorRects", "PauseMenu", "FailMenu")]
+[node name="HUD" type="Control" node_paths=PackedStringArray("levelProgressBar", "colorRects", "PauseMenu", "FailMenu", "WinMenu")]
 process_mode = 3
 layout_mode = 3
 anchors_preset = 15
@@ -19,6 +20,7 @@ levelProgressBar = NodePath("Top CenterContainer/Level ProgressBar")
 colorRects = [NodePath("Bottom CenterContainer/PanelContainer/MarginContainer/HBoxContainer/Paint 1"), NodePath("Bottom CenterContainer/PanelContainer/MarginContainer/HBoxContainer/Paint 2"), NodePath("Bottom CenterContainer/PanelContainer/MarginContainer/HBoxContainer/Paint 3")]
 PauseMenu = NodePath("Pause Menu")
 FailMenu = NodePath("Level Fail Menu")
+WinMenu = NodePath("Level Win Menu")
 
 [node name="Top CenterContainer" type="CenterContainer" parent="."]
 layout_mode = 1
@@ -80,6 +82,11 @@ visible = false
 layout_mode = 1
 
 [node name="Level Fail Menu" parent="." instance=ExtResource("3_6wsvs")]
+visible = false
+layout_mode = 1
+
+[node name="Level Win Menu" parent="." instance=ExtResource("4_q0guf")]
+visible = false
 layout_mode = 1
 
 [node name="Pause Menu TextureButton" type="TextureButton" parent="."]

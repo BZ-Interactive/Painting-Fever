@@ -8,11 +8,13 @@ public partial class HUD : Control, IEventSubscriber
     [ExportCategory("UI Subscenes")]
     [Export] public PauseMenu PauseMenu { get; private set; }
     [Export] public FailMenu FailMenu { get; private set; }
+    [Export] public WinMenu WinMenu { get; private set; }
 
     public override void _Ready()
     {
         PauseMenu.Visible = false;
         HideFailMenu();
+        HideWinMenu();
         base._Ready();
     }
 
@@ -53,6 +55,16 @@ public partial class HUD : Control, IEventSubscriber
     public void HideFailMenu()
     {
         FailMenu.CloseFailMenu();
+    }
+
+    public void ShowWinMenu(int score)
+    {
+        WinMenu.OpenWinMenu(score);
+    }
+
+    public void HideWinMenu()
+    {
+        WinMenu.CloseWinMenu();
     }
 
     public void OnPauseButtonPressed()
