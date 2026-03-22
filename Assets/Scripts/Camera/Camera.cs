@@ -8,11 +8,12 @@ public partial class Camera : Camera2D, IEventSubscriber
     {
         ((IEventSubscriber)this).SubscribeToEvents();
     }
-    
+
     public override void _Process(double delta)
     {
         if (PlayerObject != null)
         {
+            if (PlayerObject.dead) return;
             Move(PlayerObject, delta);
         }
     }
@@ -30,7 +31,7 @@ public partial class Camera : Camera2D, IEventSubscriber
 
     void IEventSubscriber.UnsubscribeFromEvents()
     {
-        LevelManager.Instance.LevelLoaded -= OnLevelLoaded; 
+        LevelManager.Instance.LevelLoaded -= OnLevelLoaded;
         LevelManager.Instance.LevelUnloaded -= OnLevelUnloaded;
     }
 
