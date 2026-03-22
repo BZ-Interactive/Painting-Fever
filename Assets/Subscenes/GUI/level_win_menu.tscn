@@ -1,0 +1,128 @@
+[gd_scene load_steps=7 format=3 uid="uid://clncw2rbyltpd"]
+
+[ext_resource type="Script" uid="uid://tbwyrbtf18yq" path="res://Assets/Scripts/GUI/Menu/WinMenu.cs" id="1_nv43d"]
+[ext_resource type="Theme" uid="uid://vqgb03qbuhg6" path="res://Assets/Themes/Menu-UITheme.tres" id="2_1am53"]
+[ext_resource type="StyleBox" uid="uid://dy0jbaujbuvwt" path="res://Assets/Styles/Menu_Style_Box.tres" id="3_6rryi"]
+[ext_resource type="Texture2D" uid="uid://bdiiev27hydq5" path="res://Assets/Sprites/UI/Disco/disco-ball-blue.svg" id="4_nv43d"]
+[ext_resource type="Texture2D" uid="uid://bov54ikxbmhg0" path="res://Assets/Sprites/UI/Disco/disco-ball-green.svg" id="5_tmhq5"]
+[ext_resource type="Texture2D" uid="uid://dk5wo1sy7ousp" path="res://Assets/Sprites/UI/Disco/disco-ball-purp.svg" id="6_8143h"]
+
+[node name="Level Win Menu" type="CenterContainer" node_paths=PackedStringArray("stars")]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_nv43d")
+stars = []
+
+[node name="Panel" type="PanelContainer" parent="."]
+self_modulate = Color(0.2, 1, 0.27058825, 1)
+layout_mode = 2
+theme = ExtResource("2_1am53")
+theme_override_styles/panel = ExtResource("3_6rryi")
+
+[node name="MarginContainer" type="MarginContainer" parent="Panel"]
+layout_mode = 2
+theme_override_constants/margin_left = 30
+theme_override_constants/margin_top = 30
+theme_override_constants/margin_right = 30
+theme_override_constants/margin_bottom = 30
+
+[node name="PanelContainer" type="PanelContainer" parent="Panel/MarginContainer"]
+self_modulate = Color(0.42745098, 0.34901962, 1, 1)
+layout_mode = 2
+theme_override_styles/panel = ExtResource("3_6rryi")
+
+[node name="MarginContainer" type="MarginContainer" parent="Panel/MarginContainer/PanelContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 15
+theme_override_constants/margin_top = 15
+theme_override_constants/margin_right = 15
+theme_override_constants/margin_bottom = 15
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Panel/MarginContainer/PanelContainer/MarginContainer"]
+layout_mode = 2
+
+[node name="Score Indicators HBoxContainer" type="HBoxContainer" parent="Panel/MarginContainer/PanelContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 20
+alignment = 1
+
+[node name="Disco Ball 1 TextureRect" type="TextureRect" parent="Panel/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/Score Indicators HBoxContainer"]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+texture = ExtResource("4_nv43d")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Disco Ball 2 TextureRect" type="TextureRect" parent="Panel/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/Score Indicators HBoxContainer"]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+texture = ExtResource("5_tmhq5")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Disco Ball 3 TextureRect" type="TextureRect" parent="Panel/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/Score Indicators HBoxContainer"]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+texture = ExtResource("6_8143h")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Spacer2" type="Control" parent="Panel/MarginContainer/PanelContainer/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 5)
+layout_mode = 2
+
+[node name="Score HBoxContainer" type="HBoxContainer" parent="Panel/MarginContainer/PanelContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Score Label" type="Label" parent="Panel/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/Score HBoxContainer"]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text = "Score: "
+horizontal_alignment = 2
+vertical_alignment = 1
+autowrap_mode = 3
+
+[node name="Score Label2" type="Label" parent="Panel/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/Score HBoxContainer"]
+custom_minimum_size = Vector2(150, 55)
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text = "%XXX"
+vertical_alignment = 1
+autowrap_mode = 3
+
+[node name="Passed Label" type="Label" parent="Panel/MarginContainer/PanelContainer/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(300, 55)
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text = "Level Passed"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+
+[node name="Spacer" type="Control" parent="Panel/MarginContainer/PanelContainer/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
+
+[node name="Buttons Vbox" type="VBoxContainer" parent="Panel/MarginContainer/PanelContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Next Button" type="Button" parent="Panel/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/Buttons Vbox"]
+layout_mode = 2
+text = "Next Level
+"
+
+[node name="Spacer" type="Control" parent="Panel/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/Buttons Vbox"]
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
+
+[node name="Return Button" type="Button" parent="Panel/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/Buttons Vbox"]
+self_modulate = Color(1, 0.84705883, 0.4, 1)
+layout_mode = 2
+text = "Return to Menu"
+
+[connection signal="pressed" from="Panel/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/Buttons Vbox/Next Button" to="." method="OnNextButton"]
+[connection signal="pressed" from="Panel/MarginContainer/PanelContainer/MarginContainer/VBoxContainer/Buttons Vbox/Return Button" to="." method="OnReturnButton"]

@@ -42,7 +42,7 @@ theme_override_constants/margin_bottom = 15
 layout_mode = 2
 
 [node name="Fail Reason Label" type="Label" parent="Panel/MarginContainer/PanelContainer/MarginContainer/VBoxContainer"]
-custom_minimum_size = Vector2(250, 55)
+custom_minimum_size = Vector2(300, 55)
 layout_mode = 2
 theme_override_font_sizes/font_size = 32
 text = "reason-of-fail"
