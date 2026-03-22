@@ -187,10 +187,11 @@ public partial class PlayerObject : CharacterBody2D
     {
         MoveSpeed = 0f;
         dead = true;
+        
         PopEffect.Modulate = Shape.Modulate;
         PopEffect.Emitting = true;
+        
         SoundManager.Instance.PlaySfx(PopSound);
-        // pop 2D particle effect
         Tween tween = GetTree().CreateTween();
         tween.TweenProperty(this, "scale", Vector2.Zero, POP_TIME)
                 .SetTrans(Tween.TransitionType.Elastic)
