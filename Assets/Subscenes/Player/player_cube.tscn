@@ -1,7 +1,8 @@
-[gd_scene load_steps=4 format=3 uid="uid://yc15qf53iqv1"]
+[gd_scene load_steps=5 format=3 uid="uid://yc15qf53iqv1"]
 
 [ext_resource type="Script" uid="uid://canueraolnluh" path="res://Assets/Scripts/Player/PlayerObject.cs" id="1_7wb8f"]
 [ext_resource type="Texture2D" uid="uid://dpxhf4glpnaac" path="res://Assets/Sprites/square.svg" id="2_x078r"]
+[ext_resource type="AudioStream" uid="uid://2iliwjxuybdk" path="res://Assets/Sounds/Player/pop-effect.mp3" id="2_y1lob"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_sbaqq"]
 size = Vector2(40, 40)
@@ -12,6 +13,7 @@ collision_mask = 13
 floor_constant_speed = true
 script = ExtResource("1_7wb8f")
 Shape = NodePath("Visual/Sprite2D")
+PopSound = ExtResource("2_y1lob")
 
 [node name="Visual" type="Node2D" parent="."]
 

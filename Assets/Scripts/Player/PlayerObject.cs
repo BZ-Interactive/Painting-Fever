@@ -5,7 +5,7 @@ public partial class PlayerObject : CharacterBody2D
 {
     public const float OBJECT_RADIUS = 20f;
     public const float GRAVITY = 9.81f;
-    public const float POP_TIME = 0.5f;
+    public const float POP_TIME = 0.4f;
 
     public PlayerColors Color { get; private set; } = PlayerColors.Grey;
 
@@ -27,6 +27,8 @@ public partial class PlayerObject : CharacterBody2D
     public bool Sticked { get; set; } = false;
     public bool Stuck { get; private set; } = false;
     public float StuckTime { get; private set; } = 0f;
+
+    [Export] public AudioStream PopSound { get; private set; }
 
     public event Action GotUnstuck;
     public bool dead = false;
@@ -184,6 +186,7 @@ public partial class PlayerObject : CharacterBody2D
     {
         MoveSpeed = 0f;
         dead = true;
+        SoundManager.Instance.PlaySfx(PopSound);
         // add sound effect and pop 2D effect
         Tween tween = GetTree().CreateTween();
         tween.TweenProperty(this, "scale", Vector2.Zero, POP_TIME)
