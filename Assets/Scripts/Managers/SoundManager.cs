@@ -3,157 +3,163 @@ using System;
 
 public partial class SoundManager : Node, IEventSubscriber
 {
-	public static SoundManager Instance { get; private set; }
-	[Export] public AudioStreamPlayer MenuMusicPlayer { get; private set; }
+    public static SoundManager Instance { get; private set; }
+    [Export] public AudioStreamPlayer MenuMusicPlayer { get; private set; }
 
-	/// <summary>
-	/// Player for music in the levels.
-	/// </summary>
-	[Export] public AudioStreamPlayer LevelMusicPlayer { get; private set; }
-	
-	/// <summary>
-	/// Player for sound effects, effects that include footsteps, explosions, and other in-game sounds.
-	/// </summary>
-	[Export] public AudioStreamPlayer EffectsPlayer { get; private set; }
+    /// <summary>
+    /// Player for music in the levels.
+    /// </summary>
+    [Export] public AudioStreamPlayer LevelMusicPlayer { get; private set; }
 
-	/// <summary>
-	/// Master volume that affects all sounds. 0-100 range.
-	/// </summary>
-	public float MasterVolume { get; private set; } = 50f;
-	public float MusicVolume { get; private set; } = 100f;
-	public float SfxVolume { get; private set; } = 100f;
+    /// <summary>
+    /// Player for sound effects, effects that include footsteps, explosions, and other in-game sounds.
+    /// </summary>
+    [Export] public AudioStreamPlayer EffectsPlayer { get; private set; }
 
-	public SoundManager() { Instance = this; }
-	public override void _Ready()
-	{
-		LoadSettings();
-		((IEventSubscriber)this).SubscribeToEvents();
-	}
+    /// <summary>
+    /// Master volume that affects all sounds. 0-100 range.
+    /// </summary>
+    public float MasterVolume { get; private set; } = 50f;
+    public float MusicVolume { get; private set; } = 100f;
+    public float SfxVolume { get; private set; } = 100f;
 
-	public override void _ExitTree()
-	{
-		((IEventSubscriber)this).UnsubscribeFromEvents();
-	}
+    public SoundManager() { Instance = this; }
+    public override void _Ready()
+    {
+        LoadSettings();
+        ((IEventSubscriber)this).SubscribeToEvents();
+    }
 
-	void IEventSubscriber.SubscribeToEvents()
-	{
-		GameManager.GameStateChanged += OnGameStateChanged;
-		SettingsManager.Instance.SettingsChanged += LoadSettings;
-	}
+    public override void _ExitTree()
+    {
+        ((IEventSubscriber)this).UnsubscribeFromEvents();
+    }
 
-	void IEventSubscriber.UnsubscribeFromEvents()
-	{
-		GameManager.GameStateChanged -= OnGameStateChanged;
-		SettingsManager.Instance.SettingsChanged -= LoadSettings;
-	}
+    void IEventSubscriber.SubscribeToEvents()
+    {
+        GameManager.GameStateChanged += OnGameStateChanged;
+        SettingsManager.Instance.SettingsChanged += LoadSettings;
+    }
 
-	private void LoadSettings()
-	{
-		SettingsData data = SettingsManager.Instance.SettingsData;
-		MasterVolume = data.MasterVolume;
-		MusicVolume = data.MusicVolume;
-		SfxVolume = data.EffectsVolume;
-		SetVolumes();
-	}
+    void IEventSubscriber.UnsubscribeFromEvents()
+    {
+        GameManager.GameStateChanged -= OnGameStateChanged;
+        SettingsManager.Instance.SettingsChanged -= LoadSettings;
+    }
 
-	private void SetVolumes()
-	{
-		float masterMult = MasterVolume / 100f;
-		MenuMusicPlayer.VolumeDb = Mathf.LinearToDb(masterMult * MusicVolume / 100f);
-		LevelMusicPlayer.VolumeDb = Mathf.LinearToDb(masterMult * MusicVolume / 100f);
-		EffectsPlayer.VolumeDb = Mathf.LinearToDb(masterMult * SfxVolume / 100f);
-	}
+    private void LoadSettings()
+    {
+        SettingsData data = SettingsManager.Instance.SettingsData;
+        MasterVolume = data.MasterVolume;
+        MusicVolume = data.MusicVolume;
+        SfxVolume = data.EffectsVolume;
+        SetVolumes();
+    }
 
-	public void PlayLevelMusic(AudioStream music)
-	{
-		if (MenuMusicPlayer.Playing)
-			MenuMusicPlayer.Stop();
+    private void SetVolumes()
+    {
+        float masterMult = MasterVolume / 100f;
+        MenuMusicPlayer.VolumeDb = Mathf.LinearToDb(masterMult * MusicVolume / 100f);
+        LevelMusicPlayer.VolumeDb = Mathf.LinearToDb(masterMult * MusicVolume / 100f);
+        EffectsPlayer.VolumeDb = Mathf.LinearToDb(masterMult * SfxVolume / 100f);
+    }
 
-		LevelMusicPlayer.Stream = music;
-		LevelMusicPlayer.Play();
-	}
+    public void PlayLevelMusic(AudioStream music)
+    {
+        if (MenuMusicPlayer.Playing)
+            MenuMusicPlayer.Stop();
 
-	public void PlaySfx(AudioStream sfx)
-	{
-		if (EffectsPlayer.Playing)
-			EffectsPlayer.Stop();
+        LevelMusicPlayer.Stream = music;
+        LevelMusicPlayer.Play();
+    }
 
-		EffectsPlayer.Stream = sfx;
-		EffectsPlayer.Play();
-	}
+    public void PlaySfx(AudioStream sfx)
+    {
+        if (EffectsPlayer.Playing)
+            EffectsPlayer.Stop();
 
-	public void PlayMenuMusic()
-	{
-		if (LevelMusicPlayer.Playing)
-			LevelMusicPlayer.Stop();
+        EffectsPlayer.Stream = sfx;
+        EffectsPlayer.Play();
+    }
 
-		MenuMusicPlayer.Play();
-	}
+    public void PlayMenuMusic()
+    {
+        if (LevelMusicPlayer.Playing)
+            LevelMusicPlayer.Stop();
 
-	public void SetMasterVolume(float volume)
-	{
-		MasterVolume = volume;
-		SetVolumes();
-	}
+        MenuMusicPlayer.Play();
+    }
 
-	public void SetMusicVolume(float volume)
-	{
-		MusicVolume = volume;
-		SetVolumes();
-	}
+    public void SetMasterVolume(float volume)
+    {
+        MasterVolume = volume;
+        SetVolumes();
+    }
 
-	public void SetSfxVolume(float volume)
-	{
-		SfxVolume = volume;
-		SetVolumes();
-	}
+    public void SetMusicVolume(float volume)
+    {
+        MusicVolume = volume;
+        SetVolumes();
+    }
 
-	private void OnGameStateChanged(GameState oldState, GameState newState)
-	{
-		switch (newState)
-		{
-			case GameState.Menu:
-				GD.Print("Switching to menu music");
-				PlayMenuMusic();
-				break;
-		}
-	}
+    public void SetSfxVolume(float volume)
+    {
+        SfxVolume = volume;
+        SetVolumes();
+    }
 
+    private void OnGameStateChanged(GameState oldState, GameState newState)
+    {
+        switch (newState)
+        {
+            case GameState.Menu:
+                GD.Print("Switching to menu music");
+                PlayMenuMusic();
+                break;
+        }
+    }
 
     public bool CheckTiming(bool printValues)
     {
-		if(LevelManager.Instance.CurrentLevel==null)
-			return false;
-		
-		float songPosition = (float) AudioServer.GetTimeSinceLastMix() + LevelMusicPlayer.GetPlaybackPosition()  - (float) AudioServer.GetOutputLatency();
-		float SPB = 60.0f / LevelManager.Instance.CurrentLevel.MusicBPM;
-		float currentBeat = (float) Math.Round(songPosition / SPB);
+        if (LevelManager.Instance.CurrentLevel == null)
+            return false;
 
-		float nearestBeatTime = currentBeat * SPB;
-		float diff = Math.Abs(songPosition - nearestBeatTime);
+        float songPosition = (float)AudioServer.GetTimeSinceLastMix() + LevelMusicPlayer.GetPlaybackPosition() - (float)AudioServer.GetOutputLatency();
+        float SPB = 60.0f / LevelManager.Instance.CurrentLevel.MusicBPM;
+        float currentBeat = (float)Math.Round(songPosition / SPB);
 
-		#if DEBUG
-		if (printValues)
-		{
-			GD.Print("diff: " + diff);
-			GD.Print("Offset: " + LevelManager.Instance.CurrentLevel.MusicOffset);
-			GD.Print("BPM: " + LevelManager.Instance.CurrentLevel.MusicBPM);
-		}
-		#endif
-		if(diff < LevelManager.Instance.CurrentLevel.MusicOffset)
-		{
-			#if DEBUG
-			if (printValues)
-				GD.Print("Hit");
-			#endif
-			return true;
-		}
-		#if DEBUG
-		if (printValues)
-			GD.Print("Miss");
-		#endif
-		
-		return false;
+        float nearestBeatTime = currentBeat * SPB;
+        float diff = Math.Abs(songPosition - nearestBeatTime);
+
+#if DEBUG
+        if (printValues)
+        {
+            GD.Print("diff: " + diff);
+            GD.Print("Offset: " + LevelManager.Instance.CurrentLevel.MusicOffset);
+            GD.Print("BPM: " + LevelManager.Instance.CurrentLevel.MusicBPM);
+        }
+#endif
+        if (diff < LevelManager.Instance.CurrentLevel.MusicOffset)
+        {
+#if DEBUG
+            if (printValues)
+                GD.Print("Hit");
+#endif
+            return true;
+        }
+#if DEBUG
+        if (printValues)
+            GD.Print("Miss");
+#endif
+
+        return false;
     }
 
+    public (float, float) GetSongPlaybackInfo()
+    {
+        float songPosition = LevelMusicPlayer.GetPlaybackPosition();
+        float spb = 60.0f / LevelManager.Instance.CurrentLevel.MusicBPM;
+
+        return (songPosition, spb);
+    }
 }
