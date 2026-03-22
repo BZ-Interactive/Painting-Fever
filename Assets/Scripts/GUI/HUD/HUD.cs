@@ -13,8 +13,6 @@ public partial class HUD : Control, IEventSubscriber
     public override void _Ready()
     {
         PauseMenu.Visible = false;
-        HideFailMenu();
-        HideWinMenu();
         base._Ready();
     }
 
