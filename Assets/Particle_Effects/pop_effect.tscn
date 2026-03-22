@@ -1,0 +1,21 @@
+[gd_scene load_steps=2 format=3 uid="uid://bkssmwc3p4ior"]
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_coeoe"]
+particle_flag_disable_z = true
+spread = 180.0
+initial_velocity_min = 200.0
+initial_velocity_max = 500.0
+gravity = Vector3(0, 0, 0)
+scale_max = 3.0
+
+[node name="Pop_Effect" type="GPUParticles2D"]
+emitting = false
+amount = 50
+lifetime = 0.4
+one_shot = true
+explosiveness = 0.6
+trail_enabled = true
+trail_lifetime = 0.06999999999999999
+trail_sections = 2
+trail_section_subdivisions = 1
+process_material = SubResource("ParticleProcessMaterial_coeoe")

@@ -1,17 +1,21 @@
-[gd_scene load_steps=4 format=3 uid="uid://yc15qf53iqv1"]
+[gd_scene load_steps=6 format=3 uid="uid://yc15qf53iqv1"]
 
 [ext_resource type="Script" uid="uid://canueraolnluh" path="res://Assets/Scripts/Player/PlayerObject.cs" id="1_7wb8f"]
 [ext_resource type="Texture2D" uid="uid://dpxhf4glpnaac" path="res://Assets/Sprites/square.svg" id="2_x078r"]
+[ext_resource type="AudioStream" uid="uid://2iliwjxuybdk" path="res://Assets/Sounds/Player/pop-effect.mp3" id="2_y1lob"]
+[ext_resource type="PackedScene" uid="uid://bkssmwc3p4ior" path="res://Assets/Particle_Effects/pop_effect.tscn" id="4_u20x3"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_sbaqq"]
 size = Vector2(40, 40)
 
-[node name="Player object" type="CharacterBody2D" node_paths=PackedStringArray("Shape")]
+[node name="Player object" type="CharacterBody2D" node_paths=PackedStringArray("Shape", "PopEffect")]
 collision_layer = 13
 collision_mask = 13
 floor_constant_speed = true
 script = ExtResource("1_7wb8f")
 Shape = NodePath("Visual/Sprite2D")
+PopSound = ExtResource("2_y1lob")
+PopEffect = NodePath("Pop_Effect")
 
 [node name="Visual" type="Node2D" parent="."]
 
@@ -31,5 +35,7 @@ debug_color = Color(0.99999994, 0.14230075, 0.3681643, 0.41960785)
 
 [node name="VisibleOnScreenEnabler2D" type="VisibleOnScreenEnabler2D" parent="."]
 rect = Rect2(-20, -20, 40, 40)
+
+[node name="Pop_Effect" parent="." instance=ExtResource("4_u20x3")]
 
 [connection signal="screen_exited" from="VisibleOnScreenEnabler2D" to="." method="OnScreenExited"]
