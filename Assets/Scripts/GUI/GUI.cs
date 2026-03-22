@@ -35,7 +35,7 @@ public partial class GUI : CanvasLayer, IEventSubscriber
     {
         MainMenu.Visible = true;
     }
-    
+
     public void HideMainMenu()
     {
         MainMenu.Visible = false;
@@ -51,7 +51,7 @@ public partial class GUI : CanvasLayer, IEventSubscriber
         HUD.Visible = false;
 
         if (Engine.TimeScale != 1f)
-            Engine.TimeScale = 1f;  
+            Engine.TimeScale = 1f;
     }
 
     private void OnGameStateChanged(GameState oldState, GameState newState)
@@ -61,12 +61,12 @@ public partial class GUI : CanvasLayer, IEventSubscriber
             case GameState.Menu:
                 if (oldState == GameState.Start)
                     ShowMainMenu();
-                    HideHUD();
+                HideHUD();
                 break;
             case GameState.Play:
                 if (oldState == GameState.Menu)
                     HideMainMenu();
-                    ShowHUD();
+                ShowHUD();
                 break;
             default:
                 break;

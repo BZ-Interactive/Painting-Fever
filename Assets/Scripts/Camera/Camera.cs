@@ -13,7 +13,7 @@ public partial class Camera : Camera2D, IEventSubscriber
     {
         if (PlayerObject != null)
         {
-            if (PlayerObject.dead) return;
+            if (PlayerObject.failed) return;
             Move(PlayerObject, delta);
         }
     }

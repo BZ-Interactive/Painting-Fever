@@ -7,9 +7,12 @@ public partial class HUD : Control, IEventSubscriber
 
     [ExportCategory("UI Subscenes")]
     [Export] public PauseMenu PauseMenu { get; private set; }
+    [Export] public FailMenu FailMenu { get; private set; }
 
     public override void _Ready()
     {
+        PauseMenu.Visible = false;
+        HideFailMenu();
         base._Ready();
     }
 
@@ -36,10 +39,20 @@ public partial class HUD : Control, IEventSubscriber
     {
         levelProgressBar.Value = progress;
     }
-    
+
     public void SelectColour(int index)
     {
         //colorRects[index].Shine(); // TODO: add Shine effect
+    }
+
+    public void ShowFailMenu(string failReason)
+    {
+        FailMenu.OpenFailMenu(failReason);
+    }
+
+    public void HideFailMenu()
+    {
+        FailMenu.CloseFailMenu();
     }
 
     public void OnPauseButtonPressed()
