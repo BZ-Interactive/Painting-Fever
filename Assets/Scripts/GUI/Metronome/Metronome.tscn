@@ -1,0 +1,22 @@
+[gd_scene load_steps=3 format=3 uid="uid://bnmj5a7il7r3v"]
+
+[ext_resource type="Script" uid="uid://bkobi5n0mttty" path="res://Assets/Scripts/GUI/Metronome/Metronome.cs" id="1_fley1"]
+[ext_resource type="Texture2D" uid="uid://daxga8fsipt6y" path="res://Assets/Sprites/UI/Arrow/arrow-normal.svg" id="2_7oeq6"]
+
+[node name="Metronome" type="Control" node_paths=PackedStringArray("movingArrow")]
+layout_mode = 3
+anchors_preset = 0
+script = ExtResource("1_fley1")
+movingArrow = NodePath("ArrowMoving")
+
+[node name="ArrowNormal" type="Sprite2D" parent="."]
+position = Vector2(640, 550)
+rotation = -1.5707964
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("2_7oeq6")
+
+[node name="ArrowMoving" type="Sprite2D" parent="."]
+position = Vector2(300, 550)
+rotation = -1.5707964
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("2_7oeq6")
