@@ -62,6 +62,8 @@
 	\hline
 	23.03.2026    & 0.6              & Barkın Zorlu  & Updated Organization ICON and Added Game Icon to TDD. \\
 	\hline
+	23.03.2026    & 0.7              & Barkın Zorlu  & Update TDD with target framerate and planned input customization. \\
+	\hline
 \end{longtable}
 \newpage
 
@@ -195,6 +197,13 @@ All player inputs are defined in \texttt{project.godot} under the \texttt{[input
 	\item \textbf{Color Selection}: Direct color state change on \texttt{IsActionPressed} events
 	\item \textbf{Pause}: Checked via \texttt{GUI.Instance.PauseMenuOpened} to prevent input passthrough
 	\item \textbf{Debug}: Conditional compilation (\texttt{\#if DEBUG}) prevents release builds from accessing debug features
+	\item \textbf{Frame Rate Target}: Minimum 60 FPS to minimize input latency and ensure responsive rhythm-based mechanics
+\end{itemize}
+
+\section{Planned Control Customization}
+\begin{itemize}[noitemsep]
+	\item \textbf{Remappable Controls}: Future implementation planned for rebindable keybinds if deemed worth.
+	\item \textbf{Storage}: User-defined mappings will be persisted via \texttt{SettingsManager}
 \end{itemize}
 
 \chapter{Detailed Class Descriptions}
