@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://dbh70xnomdx5c"]
+[gd_scene load_steps=8 format=3 uid="uid://dbh70xnomdx5c"]
 
 [ext_resource type="Script" uid="uid://gjgame5ymalg" path="res://Assets/Scripts/GUI/HUD/HUD.cs" id="1_dny7b"]
 [ext_resource type="PackedScene" uid="uid://bnyjiy5ahlolr" path="res://Assets/Subscenes/GUI/pause_menu.tscn" id="1_pbvnn"]
@@ -8,7 +8,7 @@
 [ext_resource type="PackedScene" uid="uid://clncw2rbyltpd" path="res://Assets/Subscenes/GUI/level_win_menu.tscn" id="4_q0guf"]
 [ext_resource type="Texture2D" uid="uid://bbky04phhrli7" path="res://Assets/Sprites/UI/gear.svg" id="4_xrlhs"]
 
-[node name="HUD" type="Control" node_paths=PackedStringArray("levelProgressBar", "colorRects", "PauseMenu", "FailMenu", "WinMenu")]
+[node name="HUD" type="Control" node_paths=PackedStringArray("levelProgressBar", "colorRects", "PauseMenu")]
 process_mode = 3
 layout_mode = 3
 anchors_preset = 15
@@ -20,8 +20,6 @@ script = ExtResource("1_dny7b")
 levelProgressBar = NodePath("Top CenterContainer/Level ProgressBar")
 colorRects = [NodePath("Bottom CenterContainer/PanelContainer/MarginContainer/HBoxContainer/Paint 1"), NodePath("Bottom CenterContainer/PanelContainer/MarginContainer/HBoxContainer/Paint 2"), NodePath("Bottom CenterContainer/PanelContainer/MarginContainer/HBoxContainer/Paint 3")]
 PauseMenu = NodePath("Pause Menu")
-FailMenu = NodePath("Level Fail Menu")
-WinMenu = NodePath("Level Win Menu")
 
 [node name="Top CenterContainer" type="CenterContainer" parent="."]
 layout_mode = 1
@@ -78,7 +76,7 @@ custom_minimum_size = Vector2(40, 40)
 layout_mode = 2
 color = Color(0, 0, 1, 1)
 
-[node name="Metronome2" parent="." instance=ExtResource("2_6wsvs")]
+[node name="Metronome" parent="." instance=ExtResource("2_6wsvs")]
 layout_mode = 0
 
 [node name="Pause Menu" parent="." instance=ExtResource("1_pbvnn")]
