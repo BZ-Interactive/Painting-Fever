@@ -16,7 +16,7 @@
 [node name="dev_level" type="Node2D" node_paths=PackedStringArray("CentralLinePoint")]
 script = ExtResource("1_hvebc")
 MaxDistance = 6400.0
-LaneOffset = 160.0
+LaneOffset = 60.0
 LevelMusic = ExtResource("2_wxd11")
 MusicBPM = 144.0
 MusicOffset = 0.15

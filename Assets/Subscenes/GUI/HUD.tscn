@@ -8,7 +8,7 @@
 [ext_resource type="PackedScene" uid="uid://clncw2rbyltpd" path="res://Assets/Subscenes/GUI/level_win_menu.tscn" id="4_q0guf"]
 [ext_resource type="Texture2D" uid="uid://bbky04phhrli7" path="res://Assets/Sprites/UI/gear.svg" id="4_xrlhs"]
 
-[node name="HUD" type="Control" node_paths=PackedStringArray("levelProgressBar", "colorRects", "PauseMenu")]
+[node name="HUD" type="Control" node_paths=PackedStringArray("levelProgressBar", "colorRects", "PauseMenu", "FailMenu", "WinMenu")]
 process_mode = 3
 layout_mode = 3
 anchors_preset = 15
@@ -20,6 +20,8 @@ script = ExtResource("1_dny7b")
 levelProgressBar = NodePath("Top CenterContainer/Level ProgressBar")
 colorRects = [NodePath("Bottom CenterContainer/PanelContainer/MarginContainer/HBoxContainer/Paint 1"), NodePath("Bottom CenterContainer/PanelContainer/MarginContainer/HBoxContainer/Paint 2"), NodePath("Bottom CenterContainer/PanelContainer/MarginContainer/HBoxContainer/Paint 3")]
 PauseMenu = NodePath("Pause Menu")
+FailMenu = NodePath("Level Fail Menu")
+WinMenu = NodePath("Level Win Menu")
 
 [node name="Top CenterContainer" type="CenterContainer" parent="."]
 layout_mode = 1

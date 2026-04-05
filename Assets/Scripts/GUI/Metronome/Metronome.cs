@@ -6,10 +6,13 @@ public partial class Metronome : Control
 	// Called when the node enters the scene tree for the first time.
 	
     [Export] public Sprite2D movingArrow { get; private set; }
-    Tween tween;
+    [Export] public Sprite2D staticArrow { get; private set; }
+    private Tween arrowColorTween;
+    [Export] public GpuParticles2D PopEffect { get; private set; }
 	public override void _Ready()
-	{
-	}
+    {
+        arrowColorTween = CreateTween();
+    }
 
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
 	public override void _Process(double delta)
@@ -54,6 +57,31 @@ public partial class Metronome : Control
 		UpdateMetronome();
 	}
 
+    public override void _Input(InputEvent @event)
+    {
+        if (@event.IsActionPressed("Move Up") || @event.IsActionPressed("Move Down"))
+        {
+            if (SoundManager.Instance.CheckTiming(false))
+            {
+                PopEffect.Restart();
+                PopEffect.Emitting = true;
+                staticArrow.Modulate = Colors.Green;
+                changeArrowColor(Colors.White);
+            }
+        }
+    }
+    public void changeArrowColor(Color target)
+    {
+        float spb = SoundManager.Instance.GetSongPlaybackInfo().Item2;
+        if (arrowColorTween.IsValid() && arrowColorTween.IsRunning())
+        {
+            arrowColorTween.Kill();
+        }
+        arrowColorTween = CreateTween();
+        arrowColorTween.TweenProperty(staticArrow, "modulate", target, spb);
+        
+    }
+
 	public void UpdateMetronome()
     {
         if (LevelManager.Instance.CurrentLevel != null && LevelManager.Instance.CurrentLevel.LevelStarted)
@@ -63,6 +91,8 @@ public partial class Metronome : Control
             float currentX = Mathf.Lerp(300.0f, 640.0f, progress);
 
             movingArrow.Position = new Vector2(currentX, 550.0f);
+
+
         }
     }
 }
